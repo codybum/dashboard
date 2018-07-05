@@ -23,7 +23,7 @@
     <repositories>
         <repository>
             <id>localrepository</id>
-            <url>file:///Users/cody/IdeaProjects/repo</url>
+            <url>file:///Users/vcbumg2/ResearchWorx/repo</url>
         </repository>
     </repositories>
 
@@ -41,8 +41,20 @@
 
     <dependencies>
 
-        <!-- https://mvnrepository.com/artifact/org.osgi/org.osgi.core -->
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-servlet-core</artifactId>
+        </dependency>
 
+        <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.osgi/org.osgi.core -->
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
@@ -95,11 +107,8 @@
             <scope>provided</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.glassfish.jersey.containers</groupId>
-            <artifactId>jersey-container-grizzly2-http</artifactId>
-            <version>${jersey.version}</version>
-        </dependency>
+
+
 
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>

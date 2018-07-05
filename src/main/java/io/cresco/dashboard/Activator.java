@@ -1,44 +1,119 @@
 package io.cresco.dashboard;
 
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.logging.Logger;
+
+import javax.servlet.ServletException;
+
+import org.glassfish.jersey.servlet.ServletContainer;
+
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventAdmin;
+import org.osgi.service.http.HttpService;
+import org.osgi.service.http.NamespaceException;
+import org.osgi.util.tracker.ServiceTracker;
 
-import java.util.ArrayList;
-import java.util.List;
+public class Activator implements BundleActivator {
 
-public class Activator implements BundleActivator
-{
+    private BundleContext bc;
+    private ServiceTracker<HttpService, HttpService> tracker;
+    private HttpService httpService = null;
+    private static final Logger logger = Logger.getLogger(Activator.class.getName());
 
+    @Override
+    public synchronized void start(BundleContext bundleContext) throws Exception {
+        this.bc = bundleContext;
 
-    /**
-     * Implements BundleActivator.start(). Prints
-     * a message and adds itself to the bundle context as a service
-     * listener.
-     * @param context the framework context for the bundle.
-     **/
+        logger.info("STARTING HTTP SERVICE BUNDLE");
 
-    private List configurationList = new ArrayList();
+        this.tracker = new ServiceTracker<HttpService, HttpService>(this.bc, HttpService.class.getName(), null) {
 
-    public void start(BundleContext context)
-    {
+            @Override
+            public HttpService addingService(ServiceReference<HttpService> serviceRef) {
+                httpService = (HttpService) super.addingService(serviceRef);
+                registerServlets();
+                return httpService;
+            }
 
+            @Override
+            public void removedService(ServiceReference<HttpService> ref, HttpService service) {
+                if (httpService == service) {
+                    unregisterServlets();
+                    httpService = null;
+                }
+                super.removedService(ref, service);
+            }
+        };
+
+        this.tracker.open();
+
+        logger.info("HTTP SERVICE BUNDLE STARTED");
+    }
+
+    @Override
+    public synchronized void stop(BundleContext bundleContext) throws Exception {
+        this.tracker.close();
+    }
+
+    private void registerServlets() {
         try {
-            System.out.println("WHY IS THIS NOT WORKING");
-        } catch(Exception ex) {
-            ex.printStackTrace();
+            rawRegisterServlets();
+        } catch (InterruptedException | NamespaceException | ServletException ie) {
+            throw new RuntimeException(ie);
         }
     }
 
-    /**
-     * Implements BundleActivator.stop(). Prints
-     * a message and removes itself from the bundle context as a
-     * service listener.
-     * @param context the framework context for the bundle.
-     **/
-    public void stop(BundleContext context)
-    {
-        System.out.println("Stopped Bundle.");
+    private void rawRegisterServlets() throws ServletException, NamespaceException, InterruptedException {
+        logger.info("JERSEY BUNDLE: REGISTERING SERVLETS");
+        logger.info("JERSEY BUNDLE: HTTP SERVICE = " + httpService.toString());
 
+        // TODO - temporary workaround
+        // This is a workaround related to issue JERSEY-2093; grizzly (1.9.5) needs to have the correct context
+        // classloader set
+        ClassLoader myClassLoader = getClass().getClassLoader();
+        ClassLoader originalContextClassLoader = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(myClassLoader);
+            httpService.registerServlet("/services", new ServletContainer(), getJerseyServletParams(), null);
+        } finally {
+            Thread.currentThread().setContextClassLoader(originalContextClassLoader);
+        }
+        // END of workaround - after grizzly updated to the recent version, only the inner call from try block will remain:
+        // httpService.registerServlet("/jersey-http-service", new ServletContainer(), getJerseyServletParams(), null);
+
+        sendAdminEvent();
+        logger.info("JERSEY BUNDLE: SERVLETS REGISTERED");
+    }
+
+    private void sendAdminEvent() {
+        ServiceReference<?> eaRef = bc.getServiceReference(EventAdmin.class.getName());
+        if (eaRef != null) {
+            EventAdmin ea = (EventAdmin) bc.getService(eaRef);
+            Map<String, String> props = new HashMap<>();
+            props.put("context-path", "/");
+            ea.sendEvent(new Event("jersey/test/DEPLOYED", props));
+            bc.ungetService(eaRef);
+        }
+    }
+
+    private void unregisterServlets() {
+        if (this.httpService != null) {
+            logger.info("JERSEY BUNDLE: UNREGISTERING SERVLETS");
+            httpService.unregister("/services");
+            logger.info("JERSEY BUNDLE: SERVLETS UNREGISTERED");
+        }
+    }
+
+    private Dictionary<String, String> getJerseyServletParams() {
+        Dictionary<String, String> jerseyServletParams = new Hashtable<>();
+        jerseyServletParams.put("javax.ws.rs.Application", JerseyApplication.class.getName());
+        return jerseyServletParams;
     }
 
 }

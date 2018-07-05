@@ -4,25 +4,34 @@ package io.cresco.dashboard;
 import io.cresco.dashboard.controllers.*;
 import io.cresco.dashboard.filters.AuthenticationFilter;
 import io.cresco.dashboard.filters.NotFoundExceptionHandler;
+
+
 import io.cresco.library.agent.AgentService;
 import io.cresco.library.messaging.MsgEvent;
 import io.cresco.library.plugin.Executor;
 import io.cresco.library.plugin.PluginBuilder;
 import io.cresco.library.plugin.PluginService;
-import org.glassfish.grizzly.http.server.CLStaticHttpHandler;
-import org.glassfish.grizzly.http.server.HttpServer;
-import org.glassfish.grizzly.http.server.StaticHttpHandler;
-import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
+
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.servlet.ServletContainer;
+
+
+import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.*;
-
-
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventAdmin;
+import org.osgi.service.http.HttpService;
+import org.osgi.service.http.NamespaceException;
+import org.osgi.util.tracker.ServiceTracker;
 
 import java.io.File;
 import java.io.OutputStream;
 import java.net.URI;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Logger;
@@ -41,7 +50,7 @@ public class Plugin implements PluginService {
     private PluginBuilder pluginBuilder;
     private Executor executor;
     //private CLogger logger;
-    private HttpServer server;
+    private HttpService server;
     public String repoPath = null;
 
     @Activate
@@ -63,6 +72,7 @@ public class Plugin implements PluginService {
                 Thread.sleep(1000);
             }
 
+            /*
             try {
                 repoPath = getRepoPath();
                 server = startServer("http://[::]:" + pluginBuilder.getConfig().getStringParam("port", "3445") + "/");
@@ -71,6 +81,7 @@ public class Plugin implements PluginService {
                 server = startServer("http://0.0.0.0:" + pluginBuilder.getConfig().getStringParam("port", "3445") + "/");
                 //logger.error("failed : " + ex.getMessage());
             }
+            */
 
             //set plugin active
             pluginBuilder.setIsActive(true);
@@ -93,7 +104,7 @@ public class Plugin implements PluginService {
         return true;
     }
 
-    private HttpServer startServer(String baseURI) {
+    private HttpService startServer(String baseURI) {
         final OutputStream nullOutputStream = new OutputStream() { @Override public void write(int b) { } };
         Logger.getLogger("").addHandler(new ConsoleHandler() {{ setOutputStream(nullOutputStream); }});
         final ResourceConfig rc = new ResourceConfig()
@@ -118,6 +129,18 @@ public class Plugin implements PluginService {
         GlobalController.connectPlugin(pluginBuilder);
         ApplicationsController.connectPlugin(pluginBuilder);
 
+
+
+        ClassLoader myClassLoader = getClass().getClassLoader();
+        ClassLoader originalContextClassLoader = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(myClassLoader);
+            //server.registerServlet("/jersey-http-service", new ServletContainer(), getJerseyServletParams(), null);
+        } finally {
+            Thread.currentThread().setContextClassLoader(originalContextClassLoader);
+        }
+
+        /*
         HttpServer server =  GrizzlyHttpServerFactory.createHttpServer(URI.create(baseURI), rc);
         server.getServerConfiguration().addHttpHandler(new CLStaticHttpHandler(Plugin.class.getClassLoader(), "includes/"), "/includes");
         server.getServerConfiguration().addHttpHandler(new CLStaticHttpHandler(Plugin.class.getClassLoader(), "css/"), "/css");
@@ -129,8 +152,15 @@ public class Plugin implements PluginService {
             StaticHttpHandler staticHttpHandler = new StaticHttpHandler(repoPath);
             server.getServerConfiguration().addHttpHandler(staticHttpHandler, "/repository");
         }
+        */
 
         return server;
+    }
+
+    private Dictionary<String, String> getJerseyServletParams() {
+        Dictionary<String, String> jerseyServletParams = new Hashtable<>();
+        jerseyServletParams.put("javax.ws.rs.Application", Plugin.class.getName());
+        return jerseyServletParams;
     }
 
     private String getRepoPath() {
