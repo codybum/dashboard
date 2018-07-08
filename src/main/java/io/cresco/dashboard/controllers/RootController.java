@@ -121,7 +121,7 @@ public class RootController {
             if (redirect != null)
                 context.put("redirect", redirect);
             else
-                context.put("redirect", "/");
+                context.put("redirect", "/services/");
             if (error != null)
                 context.put("error", error);
 
@@ -156,13 +156,13 @@ public class RootController {
                 if (username == null || username.equals("") || !username.toLowerCase().trim().equals("admin") ||
                         password == null || password.equals("") || !password.toLowerCase().trim().equals("cresco")) {
                     NewCookie errorCookie = new NewCookie(LOGIN_ERROR_COOKIE_NAME, "Invalid Username or Password!", null, null, null, 60 * 60, false);
-                    return Response.seeOther(new URI("/login")).cookie(errorCookie).build();
+                    return Response.seeOther(new URI("/services/login")).cookie(errorCookie).build();
                 }
             } else {
                 if (username == null || username.equals("") || !username.toLowerCase().trim().equals(plugin.getConfig().getStringParam("username", "admin").toLowerCase().trim()) ||
                         password == null || password.equals("") || !password.toLowerCase().trim().equals(plugin.getConfig().getStringParam("password", "cresco").toLowerCase().trim())) {
                     NewCookie errorCookie = new NewCookie(LOGIN_ERROR_COOKIE_NAME, "Invalid Username or Password!", null, null, null, 60 * 60, false);
-                    return Response.seeOther(new URI("/login")).cookie(errorCookie).build();
+                    return Response.seeOther(new URI("/services/login")).cookie(errorCookie).build();
                 }
             }
             LoginSession loginSession = LoginSessionService.create(username.trim(), rememberMe != null);
@@ -181,7 +181,7 @@ public class RootController {
         try {
             LoginSessionService.delete(sessionID);
             NewCookie deleteSession = new NewCookie(AuthenticationFilter.SESSION_COOKIE_NAME, null, null, null, null, 0, false);
-            return Response.seeOther(new URI("/login")).cookie(deleteSession).build();
+            return Response.seeOther(new URI("/services/login")).cookie(deleteSession).build();
         } catch (URISyntaxException e) {
             return Response.serverError().build();
         }
@@ -277,7 +277,7 @@ public class RootController {
     {
         System.out.println("Requesting file: " + subResources);
 
-        subResources = "/vendors/" + subResources;
+        subResources = "/css/" + subResources;
 
         InputStream in = null;
         try{
@@ -319,6 +319,56 @@ public class RootController {
 
     @PermitAll
     @GET
+    @Path("/js/{subResources:.*}")
+    //@Produces(MediaType.APPLICATION_OCTET_STREAM)
+    @Produces(MediaType.TEXT_HTML)
+    public Response getJS(@PathParam("subResources") String subResources)
+    {
+        System.out.println("Requesting file: " + subResources);
+
+        subResources = "/js/" + subResources;
+
+        InputStream in = null;
+        try{
+
+            in = getClass().getResourceAsStream(subResources);
+
+            if(in == null)
+            {
+
+                System.out.println("NOT FOUND!");
+                //in = getClass().getResourceAsStream("/404.html");
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+        }
+        catch(Exception ex)
+        {
+            System.out.println(ex.toString());
+            //in = getClass().getResourceAsStream("/500.html");
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+
+        }
+
+        if(subResources.endsWith(".jar"))
+        {
+            return Response.ok(in, "application/java-archive").build();
+        }
+        else
+        {
+            return Response.ok(in, mediaType(subResources)).build();
+            //return Response.ok(in, MediaType.TEXT_HTML).build();
+            /*
+            return Response.ok(in, MediaType.APPLICATION_OCTET_STREAM)
+                    .header("Content-Disposition", "attachment; filename=\"" + "somefile" + "\"" ) //optional
+                    .build();
+                    */
+        }
+
+    }
+
+
+    @PermitAll
+    @GET
     @Path("/img/{subResources:.*}")
     //@Produces(MediaType.APPLICATION_OCTET_STREAM)
     @Produces(MediaType.TEXT_HTML)
@@ -326,7 +376,7 @@ public class RootController {
     {
         System.out.println("Requesting file: " + subResources);
 
-        subResources = "/vendors/" + subResources;
+        subResources = "/img/" + subResources;
 
         InputStream in = null;
         try{
@@ -430,7 +480,8 @@ public class RootController {
             case "css":
                 return "text/css";
             case "svg":
-                return MediaType.APPLICATION_SVG_XML;
+                return "image/svg+xml";
+                //return MediaType.APPLICATION_SVG_XML;
             case "html":
                 return MediaType.TEXT_HTML;
             case "txt":

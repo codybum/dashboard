@@ -34,7 +34,13 @@ import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 
-
+@Component(service = Object.class,
+        reference = @Reference(
+                name="java.lang.Object",
+                service=Object.class,
+                target="(dashboard=root)"
+        )
+)
 @Path("agents")
 public class AgentsController {
     private static PluginBuilder plugin = null;

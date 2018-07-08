@@ -17,6 +17,8 @@ import io.cresco.library.messaging.MsgEvent;
 import io.cresco.library.plugin.PluginBuilder;
 import io.cresco.library.plugin.PluginService;
 import io.cresco.library.utilities.CLogger;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -27,7 +29,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-
+@Component(service = Object.class,
+        reference = @Reference(
+                name="java.lang.Object",
+                service=Object.class,
+                target="(dashboard=root)"
+        )
+)
 @Path("plugins")
 public class PluginsController {
     private static PluginBuilder plugin = null;

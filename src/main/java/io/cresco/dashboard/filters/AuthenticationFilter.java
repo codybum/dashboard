@@ -62,7 +62,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
     public AuthenticationFilter() {
         try {
-            URI logout_uri = new URI("/logout");
+            URI logout_uri = new URI("/services/logout");
             REDIRECT_LOGOUT = Response.seeOther(logout_uri).build();
         } catch (URISyntaxException e) {
             System.out.println("Failed to generate logout redirect");
@@ -72,7 +72,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
     private Response toLogin(NewCookie redirectCookie) {
         try {
-            URI login_uri = new URI("/login");
+            URI login_uri = new URI("/services/login");
             return Response.seeOther(login_uri).cookie(redirectCookie).build();
         } catch (URISyntaxException e) {
             System.out.println("Failed to generate login redirect");
@@ -83,16 +83,21 @@ public class AuthenticationFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext requestContext) {
         try {
-            Method method = resourceInfo.getResourceMethod();
-            if (method.isAnnotationPresent(PermitAll.class)) {
-                System.out.println("CODY PERMIT ALL EXIST!!!");
-                return;
-            }
 
+
+            Method method = resourceInfo.getResourceMethod();
+
+            String requestPath = requestContext.getUriInfo().getRequestUri().getPath();
+            System.out.println("Request Path: " + requestPath);
             System.out.println("TYPE: " + method.getAnnotatedReturnType().getType().getTypeName());
             for(Annotation a : method.getDeclaredAnnotations()) {
                 System.out.println("A: " + a.toString());
             }
+
+            if (method.isAnnotationPresent(PermitAll.class)) {
+                return;
+            }
+
 
 
             // Then check is the service key exists and is valid.
@@ -114,18 +119,23 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
             Cookie sessionCookie = requestContext.getCookies().get(SESSION_COOKIE_NAME);
             if (sessionCookie == null) {
-                NewCookie redirectCookie = new NewCookie(RootController.LOGIN_REDIRECT_COOKIE_NAME, "/" + requestContext.getUriInfo().getPath(), null, null, null, 60 * 60, false);
+                System.out.println("sessionCooke == null");
+                NewCookie redirectCookie = new NewCookie(RootController.LOGIN_REDIRECT_COOKIE_NAME, "/services/" + requestContext.getUriInfo().getPath(), null, null, null, 60 * 60, false);
+                System.out.println("name:" + redirectCookie.toCookie().getName() + " value:" + redirectCookie.toCookie().getValue());
                 requestContext.abortWith(toLogin(redirectCookie));
                 return;
             }
             LoginSession loginSession = LoginSessionService.getByID(sessionCookie.getValue());
             if (loginSession == null) {
+                System.out.println("loginSession == null");
+                System.out.println("REDIRECT_LOGOUT " + REDIRECT_LOGOUT);
                 requestContext.abortWith(REDIRECT_LOGOUT);
                 return;
             }
             Calendar timeout = Calendar.getInstance();
             timeout.add(Calendar.MINUTE, -1 * TIMEOUT_IN_MINUTES);
             if (loginSession.getLastSeenAsDate().before(timeout.getTime()) && !loginSession.getRemememberMe()) {
+                System.out.println("loginSession timeout");
                 requestContext.abortWith(REDIRECT_LOGOUT);
                 return;
             }

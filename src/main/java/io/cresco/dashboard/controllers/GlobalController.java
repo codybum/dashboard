@@ -16,7 +16,13 @@ import javax.ws.rs.core.Response;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-
+@Component(service = Object.class,
+        reference = @Reference(
+                name="java.lang.Object",
+                service=Object.class,
+                target="(dashboard=root)"
+        )
+)
 @Path("global")
 public class GlobalController {
     private static PluginBuilder plugin = null;

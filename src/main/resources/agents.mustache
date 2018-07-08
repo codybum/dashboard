@@ -118,7 +118,7 @@
                 return;
             }
             $.ajax({
-                url: "/agents/list/" + region,
+                url: "/services/agents/list/" + region,
                 success: function(json) {
                     var body = '';
                     $.each(json.agents, function (i, v) {
@@ -173,7 +173,7 @@
     });
     function resources(region, agent) {
         $.ajax({
-            url: "/agents/resources/" + region + "/" + agent,
+            url: "/services/agents/resources/" + region + "/" + agent,
             success: function(json) {
                 agent_info_modal_title.html("Resources: <br>" + region + "<br>" + agent);
                 var agentJSON = JSON.parse(json.agentresourceinfo[0].perf);

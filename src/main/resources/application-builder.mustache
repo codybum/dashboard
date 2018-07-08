@@ -143,10 +143,10 @@
         </div>
     </div>
 </div>
-<script type="text/javascript" src="/js/d3.v3.min.js"></script>
-<script type="text/javascript" src="/js/context-menu.js"></script>
-<script type="text/javascript" src="/js/menu.js"></script>
-<script type="text/javascript" src="/js/force.js"></script>
+<script type="text/javascript" src="/services/js/d3.v3.min.js"></script>
+<script type="text/javascript" src="/services/js/context-menu.js"></script>
+<script type="text/javascript" src="/services/js/menu.js"></script>
+<script type="text/javascript" src="/services/js/force.js"></script>
 <script type="text/javascript">
     var pluginData = {};
     var regionData = {};
@@ -160,19 +160,19 @@
     });
 
     function updateRepoData() {
-        $.getJSON('/plugins/listrepo', function(data) {
+        $.getJSON('/services/plugins/listrepo', function(data) {
             pluginData = data;
         });
     }
 
     function updateRegionData() {
-        $.getJSON('/regions/list', function(data) {
+        $.getJSON('/services/regions/list', function(data) {
             regionData = data;
         });
     }
 
     function updateAgentData() {
-        $.getJSON('/agents/list', function(data) {
+        $.getJSON('/services/agents/list', function(data) {
             agentData = data;
         });
     }
@@ -383,7 +383,7 @@
             data.tenant_id = "0";
             data.pipeline = JSON.stringify(cadl, undefined, 4);
             console.log(data);
-            $.post("/applications/add", data, function(result) {
+            $.post("/services/applications/add", data, function(result) {
                 window.location.href = "/applications";
             });
         } else {
@@ -453,7 +453,7 @@
         $('#upload-plugin-modal-error').css("display", "none");
         console.log(data);
         $.ajax({
-            url: '/plugins/uploadplugin',
+            url: '/services/plugins/uploadplugin',
             method: "POST",
             dataType: 'json',
             data: data,

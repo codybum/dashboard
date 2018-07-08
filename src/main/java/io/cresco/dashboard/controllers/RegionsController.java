@@ -26,7 +26,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-
+@Component(service = Object.class,
+        reference = @Reference(
+                name="java.lang.Object",
+                service=Object.class,
+                target="(dashboard=root)"
+        )
+)
 @Path("regions")
 public class RegionsController {
     private static PluginBuilder plugin = null;
