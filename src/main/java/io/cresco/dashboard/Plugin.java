@@ -12,14 +12,13 @@ import io.cresco.library.plugin.Executor;
 import io.cresco.library.plugin.PluginBuilder;
 import io.cresco.library.plugin.PluginService;
 
-import org.glassfish.jersey.media.multipart.MultiPartFeature;
-import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.servlet.ServletContainer;
 
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.annotations.*;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
@@ -41,6 +40,7 @@ import java.util.logging.Logger;
         scope=ServiceScope.PROTOTYPE,
         configurationPolicy = ConfigurationPolicy.REQUIRE,
         servicefactory = true,
+        property="dashboard=core",
         reference=@Reference(name="io.cresco.library.agent.AgentService", service=AgentService.class)
 )
 
@@ -52,9 +52,12 @@ public class Plugin implements PluginService {
     //private CLogger logger;
     private HttpService server;
     public String repoPath = null;
+    private ConfigurationAdmin configurationAdmin;
+
 
     @Activate
     void activate(BundleContext context, Map<String,Object> map) {
+
 
         this.context = context;
 
@@ -71,6 +74,16 @@ public class Plugin implements PluginService {
                 System.out.println("Plugin " + pluginBuilder.getPluginID() + " waiting on Agent Init");
                 Thread.sleep(1000);
             }
+
+            AuthenticationFilter.connectPlugin(pluginBuilder);
+            RootController.connectPlugin(pluginBuilder);
+            AlertsController.connectPlugin(pluginBuilder);
+            AgentsController.connectPlugin(pluginBuilder);
+            PluginsController.connectPlugin(pluginBuilder);
+            RegionsController.connectPlugin(pluginBuilder);
+            GlobalController.connectPlugin(pluginBuilder);
+            ApplicationsController.connectPlugin(pluginBuilder);
+
 
             /*
             try {
@@ -93,6 +106,16 @@ public class Plugin implements PluginService {
 
     }
 
+    @Reference
+    protected void setConfigurationAdmin(ConfigurationAdmin configurationAdmin) {
+        this.configurationAdmin = configurationAdmin;
+    }
+
+    protected void unsetConfigurationAdmin(ConfigurationAdmin configurationAdmin) {
+        this.configurationAdmin = null;
+    }
+
+
     @Modified
     void modified(BundleContext context, Map<String,Object> map) {
         System.out.println("Modified Config Map PluginID:" + (String) map.get("pluginID"));
@@ -107,6 +130,7 @@ public class Plugin implements PluginService {
     private HttpService startServer(String baseURI) {
         final OutputStream nullOutputStream = new OutputStream() { @Override public void write(int b) { } };
         Logger.getLogger("").addHandler(new ConsoleHandler() {{ setOutputStream(nullOutputStream); }});
+        /*
         final ResourceConfig rc = new ResourceConfig()
                 .register(AuthenticationFilter.class)
                 .register(NotFoundExceptionHandler.class)
@@ -119,7 +143,7 @@ public class Plugin implements PluginService {
                 .register(ApplicationsController.class)
                 .register(MultiPartFeature.class);
         ;
-
+*/
         AuthenticationFilter.connectPlugin(pluginBuilder);
         RootController.connectPlugin(pluginBuilder);
         AlertsController.connectPlugin(pluginBuilder);

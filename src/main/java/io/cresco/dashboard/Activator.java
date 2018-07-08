@@ -1,119 +1,64 @@
 package io.cresco.dashboard;
 
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.logging.Logger;
-
-import javax.servlet.ServletException;
-
-import org.glassfish.jersey.servlet.ServletContainer;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.event.Event;
-import org.osgi.service.event.EventAdmin;
-import org.osgi.service.http.HttpService;
-import org.osgi.service.http.NamespaceException;
-import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
+
+import java.util.Dictionary;
+import java.util.Hashtable;
 
 public class Activator implements BundleActivator {
 
-    private BundleContext bc;
-    private ServiceTracker<HttpService, HttpService> tracker;
-    private HttpService httpService = null;
-    private static final Logger logger = Logger.getLogger(Activator.class.getName());
 
-    @Override
-    public synchronized void start(BundleContext bundleContext) throws Exception {
-        this.bc = bundleContext;
+    public void start(BundleContext context) throws Exception {
 
-        logger.info("STARTING HTTP SERVICE BUNDLE");
+        //set root for jersey
+        //setHttpConfig(context);
+    }
 
-        this.tracker = new ServiceTracker<HttpService, HttpService>(this.bc, HttpService.class.getName(), null) {
+    public void stop(BundleContext context) throws Exception {
 
-            @Override
-            public HttpService addingService(ServiceReference<HttpService> serviceRef) {
-                httpService = (HttpService) super.addingService(serviceRef);
-                registerServlets();
-                return httpService;
-            }
+    }
 
-            @Override
-            public void removedService(ServiceReference<HttpService> ref, HttpService service) {
-                if (httpService == service) {
-                    unregisterServlets();
-                    httpService = null;
+
+    private void setHttpConfig(BundleContext context) {
+        try {
+
+            ConfigurationAdmin configurationAdmin;
+
+            ServiceReference configurationAdminReference = null;
+
+            configurationAdminReference = context.getServiceReference(ConfigurationAdmin.class.getName());
+
+            if (configurationAdminReference != null) {
+
+                boolean assign = configurationAdminReference.isAssignableTo(context.getBundle(), ConfigurationAdmin.class.getName());
+
+                if (assign) {
+                    configurationAdmin = (ConfigurationAdmin) context.getService(configurationAdminReference);
+
+                    Configuration configuration = configurationAdmin.getConfiguration("com.eclipsesource.jaxrs.connector", null);
+                    Dictionary props = configuration.getProperties();
+                    if (props == null) {
+                        props = new Hashtable();
+                    }
+                    props.put("root", "/");
+                    configuration.update(props);
+
+
+                } else {
+                    System.out.println("Could not Assign Configuration Admin!");
                 }
-                super.removedService(ref, service);
+
+            } else {
+                System.out.println("Admin Does Not Exist!");
             }
-        };
-
-        this.tracker.open();
-
-        logger.info("HTTP SERVICE BUNDLE STARTED");
-    }
-
-    @Override
-    public synchronized void stop(BundleContext bundleContext) throws Exception {
-        this.tracker.close();
-    }
-
-    private void registerServlets() {
-        try {
-            rawRegisterServlets();
-        } catch (InterruptedException | NamespaceException | ServletException ie) {
-            throw new RuntimeException(ie);
+        } catch(Exception ex) {
+            ex.printStackTrace();
         }
-    }
-
-    private void rawRegisterServlets() throws ServletException, NamespaceException, InterruptedException {
-        logger.info("JERSEY BUNDLE: REGISTERING SERVLETS");
-        logger.info("JERSEY BUNDLE: HTTP SERVICE = " + httpService.toString());
-
-        // TODO - temporary workaround
-        // This is a workaround related to issue JERSEY-2093; grizzly (1.9.5) needs to have the correct context
-        // classloader set
-        ClassLoader myClassLoader = getClass().getClassLoader();
-        ClassLoader originalContextClassLoader = Thread.currentThread().getContextClassLoader();
-        try {
-            Thread.currentThread().setContextClassLoader(myClassLoader);
-            httpService.registerServlet("/services", new ServletContainer(), getJerseyServletParams(), null);
-        } finally {
-            Thread.currentThread().setContextClassLoader(originalContextClassLoader);
-        }
-        // END of workaround - after grizzly updated to the recent version, only the inner call from try block will remain:
-        // httpService.registerServlet("/jersey-http-service", new ServletContainer(), getJerseyServletParams(), null);
-
-        sendAdminEvent();
-        logger.info("JERSEY BUNDLE: SERVLETS REGISTERED");
-    }
-
-    private void sendAdminEvent() {
-        ServiceReference<?> eaRef = bc.getServiceReference(EventAdmin.class.getName());
-        if (eaRef != null) {
-            EventAdmin ea = (EventAdmin) bc.getService(eaRef);
-            Map<String, String> props = new HashMap<>();
-            props.put("context-path", "/");
-            ea.sendEvent(new Event("jersey/test/DEPLOYED", props));
-            bc.ungetService(eaRef);
-        }
-    }
-
-    private void unregisterServlets() {
-        if (this.httpService != null) {
-            logger.info("JERSEY BUNDLE: UNREGISTERING SERVLETS");
-            httpService.unregister("/services");
-            logger.info("JERSEY BUNDLE: SERVLETS UNREGISTERED");
-        }
-    }
-
-    private Dictionary<String, String> getJerseyServletParams() {
-        Dictionary<String, String> jerseyServletParams = new Hashtable<>();
-        jerseyServletParams.put("javax.ws.rs.Application", JerseyApplication.class.getName());
-        return jerseyServletParams;
     }
 
 }

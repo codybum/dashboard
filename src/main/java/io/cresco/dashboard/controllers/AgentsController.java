@@ -10,9 +10,15 @@ import com.mitchellbosecke.pebble.template.PebbleTemplate;
 import io.cresco.dashboard.filters.AuthenticationFilter;
 import io.cresco.dashboard.models.LoginSession;
 import io.cresco.dashboard.services.LoginSessionService;
+import io.cresco.library.agent.AgentService;
 import io.cresco.library.messaging.MsgEvent;
 import io.cresco.library.plugin.PluginBuilder;
+import io.cresco.library.plugin.PluginService;
 import io.cresco.library.utilities.CLogger;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -27,6 +33,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
+
+
 @Path("agents")
 public class AgentsController {
     private static PluginBuilder plugin = null;
@@ -35,7 +43,7 @@ public class AgentsController {
 
     public static void connectPlugin(PluginBuilder inPlugin) {
         plugin = inPlugin;
-        logger = plugin.getLogger(AgentsController.class.getName(), CLogger.Level.Info);
+        logger = plugin.getLogger(AgentsController.class.getName(), CLogger.Level.Trace);
         gson = new Gson();
     }
 
@@ -114,6 +122,10 @@ public class AgentsController {
         try {
             if (plugin == null)
                 return Response.ok("{}", MediaType.APPLICATION_JSON_TYPE).build();
+
+            MsgEvent request = plugin.getGlobalControllerMsgEvent(MsgEvent.Type.EXEC);
+            request.setParam("action", "listagents");
+            /*
             MsgEvent request = new MsgEvent(MsgEvent.Type.EXEC, plugin.getRegion(), plugin.getAgent(),
                     plugin.getPluginID(), "Agent List Request");
             request.setParam("src_region", plugin.getRegion());
@@ -126,6 +138,8 @@ public class AgentsController {
             request.setParam("is_global", Boolean.TRUE.toString());
             request.setParam("globalcmd", "true");
             request.setParam("action", "listagents");
+            */
+
             MsgEvent response = plugin.sendRPC(request);
             if (response == null)
                 return Response.ok("{\"error\":\"Cresco rpc response was null\"}",

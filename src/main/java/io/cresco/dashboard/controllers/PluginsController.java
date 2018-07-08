@@ -15,8 +15,8 @@ import io.cresco.dashboard.models.LoginSession;
 import io.cresco.dashboard.services.LoginSessionService;
 import io.cresco.library.messaging.MsgEvent;
 import io.cresco.library.plugin.PluginBuilder;
+import io.cresco.library.plugin.PluginService;
 import io.cresco.library.utilities.CLogger;
-import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -26,6 +26,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+
 
 @Path("plugins")
 public class PluginsController {
@@ -341,6 +342,7 @@ public class PluginsController {
         }
     }
 
+    /*
     @POST
     @Path("/uploadplugin")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -374,6 +376,7 @@ public class PluginsController {
         }
 
     }
+    */
 
     // save uploaded file to new location
     private boolean saveToFile(InputStream uploadedInputStream,

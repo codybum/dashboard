@@ -3,7 +3,10 @@ package io.cresco.dashboard.controllers;
 
 import io.cresco.library.messaging.MsgEvent;
 import io.cresco.library.plugin.PluginBuilder;
+import io.cresco.library.plugin.PluginService;
 import io.cresco.library.utilities.CLogger;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -12,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+
 
 @Path("global")
 public class GlobalController {

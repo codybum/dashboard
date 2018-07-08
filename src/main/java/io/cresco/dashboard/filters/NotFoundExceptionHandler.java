@@ -3,6 +3,9 @@ package io.cresco.dashboard.filters;
 import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
+import io.cresco.library.plugin.PluginService;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Context;
@@ -15,6 +18,16 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
+
+
+@Component(service = Object.class,
+        property="dashboard=nfx",
+        reference = @Reference(
+                name="java.lang.Object",
+                service=Object.class,
+                target="(dashboard=auth)"
+        )
+)
 
 @Provider
 public class NotFoundExceptionHandler implements ExceptionMapper<NotFoundException> {

@@ -11,7 +11,10 @@ import io.cresco.dashboard.models.LoginSession;
 import io.cresco.dashboard.services.AlertService;
 import io.cresco.dashboard.services.LoginSessionService;
 import io.cresco.library.plugin.PluginBuilder;
+import io.cresco.library.plugin.PluginService;
 import io.cresco.library.utilities.CLogger;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.*;
@@ -19,6 +22,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URI;
@@ -27,7 +31,28 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/*
+@Component(service = Object.class,
+        property="dashboard=root",
+        reference = @Reference(
+                name="io.cresco.library.plugin.PluginService",
+                service=PluginService.class,
+                target="(dashboard=core)"
+        )
+)
+*/
+
+@Component(service = Object.class,
+        property="dashboard=root",
+        reference = @Reference(
+                name="java.lang.Object",
+                service=Object.class,
+                target="(dashboard=nfx)"
+        )
+)
+
 @Path("/")
+//@ApplicationPath("/")
 public class RootController {
     private static PluginBuilder plugin = null;
     private static CLogger logger = null;
@@ -44,14 +69,26 @@ public class RootController {
     @Produces(MediaType.TEXT_HTML)
     public Response index(@CookieParam(AuthenticationFilter.SESSION_COOKIE_NAME) String sessionID) {
         try {
+
             LoginSession loginSession = LoginSessionService.getByID(sessionID);
             PebbleEngine engine = new PebbleEngine.Builder().build();
             PebbleTemplate compiledTemplate = engine.getTemplate("index.html");
 
+            /*
             Map<String, Object> context = new HashMap<>();
-            context.put("user", loginSession.getUsername());
+            context.put("user", "admin");
             context.put("section", "root");
             context.put("page", "index");
+            */
+
+            Map<String, Object> context = new HashMap<>();
+            try {
+                context.put("user", loginSession.getUsername());
+                context.put("section", "root");
+                context.put("page", "index");
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
 
             Writer writer = new StringWriter();
             compiledTemplate.evaluate(writer, context);
@@ -62,6 +99,7 @@ public class RootController {
         } catch (IOException e) {
             return Response.ok("IOException: " + e.getMessage()).build();
         } catch (Exception e) {
+            e.printStackTrace();
             return Response.ok("Server error: " + e.getMessage()).build();
         }
     }
@@ -180,4 +218,229 @@ public class RootController {
             return Response.ok("[]", MediaType.APPLICATION_JSON_TYPE).build();
         }
     }
+
+    @PermitAll
+    @GET
+    @Path("/includes/{subResources:.*}")
+    //@Produces(MediaType.APPLICATION_OCTET_STREAM)
+    @Produces(MediaType.TEXT_HTML)
+    public Response getIncludes(@PathParam("subResources") String subResources)
+    {
+        System.out.println("Requesting file: " + subResources);
+
+        subResources = "/vendors/" + subResources;
+
+        InputStream in = null;
+        try{
+
+            in = getClass().getResourceAsStream(subResources);
+
+            if(in == null)
+            {
+
+                System.out.println("NOT FOUND!");
+                //in = getClass().getResourceAsStream("/404.html");
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+        }
+        catch(Exception ex)
+        {
+            System.out.println(ex.toString());
+            //in = getClass().getResourceAsStream("/500.html");
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+
+        }
+
+        if(subResources.endsWith(".jar"))
+        {
+            return Response.ok(in, "application/java-archive").build();
+        }
+        else
+        {
+            return Response.ok(in, mediaType(subResources)).build();
+            //return Response.ok(in, MediaType.TEXT_HTML).build();
+            /*
+            return Response.ok(in, MediaType.APPLICATION_OCTET_STREAM)
+                    .header("Content-Disposition", "attachment; filename=\"" + "somefile" + "\"" ) //optional
+                    .build();
+                    */
+        }
+
+    }
+
+    @PermitAll
+    @GET
+    @Path("/css/{subResources:.*}")
+    //@Produces(MediaType.APPLICATION_OCTET_STREAM)
+    @Produces(MediaType.TEXT_HTML)
+    public Response getCSS(@PathParam("subResources") String subResources)
+    {
+        System.out.println("Requesting file: " + subResources);
+
+        subResources = "/vendors/" + subResources;
+
+        InputStream in = null;
+        try{
+
+            in = getClass().getResourceAsStream(subResources);
+
+            if(in == null)
+            {
+
+                System.out.println("NOT FOUND!");
+                //in = getClass().getResourceAsStream("/404.html");
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+        }
+        catch(Exception ex)
+        {
+            System.out.println(ex.toString());
+            //in = getClass().getResourceAsStream("/500.html");
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+
+        }
+
+        if(subResources.endsWith(".jar"))
+        {
+            return Response.ok(in, "application/java-archive").build();
+        }
+        else
+        {
+            return Response.ok(in, mediaType(subResources)).build();
+            //return Response.ok(in, MediaType.TEXT_HTML).build();
+            /*
+            return Response.ok(in, MediaType.APPLICATION_OCTET_STREAM)
+                    .header("Content-Disposition", "attachment; filename=\"" + "somefile" + "\"" ) //optional
+                    .build();
+                    */
+        }
+
+    }
+
+    @PermitAll
+    @GET
+    @Path("/img/{subResources:.*}")
+    //@Produces(MediaType.APPLICATION_OCTET_STREAM)
+    @Produces(MediaType.TEXT_HTML)
+    public Response getImg(@PathParam("subResources") String subResources)
+    {
+        System.out.println("Requesting file: " + subResources);
+
+        subResources = "/vendors/" + subResources;
+
+        InputStream in = null;
+        try{
+
+            in = getClass().getResourceAsStream(subResources);
+
+            if(in == null)
+            {
+
+                System.out.println("NOT FOUND!");
+                //in = getClass().getResourceAsStream("/404.html");
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+        }
+        catch(Exception ex)
+        {
+            System.out.println(ex.toString());
+            //in = getClass().getResourceAsStream("/500.html");
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+
+        }
+
+        if(subResources.endsWith(".jar"))
+        {
+            return Response.ok(in, "application/java-archive").build();
+        }
+        else
+        {
+            return Response.ok(in, mediaType(subResources)).build();
+            //return Response.ok(in, MediaType.TEXT_HTML).build();
+            /*
+            return Response.ok(in, MediaType.APPLICATION_OCTET_STREAM)
+                    .header("Content-Disposition", "attachment; filename=\"" + "somefile" + "\"" ) //optional
+                    .build();
+                    */
+        }
+
+    }
+    @PermitAll
+    @GET
+    @Path("/vendors/{subResources:.*}")
+    //@Produces(MediaType.APPLICATION_OCTET_STREAM)
+    @Produces(MediaType.TEXT_HTML)
+    public Response getVendors(@PathParam("subResources") String subResources)
+    {
+        System.out.println("Requesting file: " + subResources);
+
+        subResources = "/vendors/" + subResources;
+
+        InputStream in = null;
+        try{
+
+            in = getClass().getResourceAsStream(subResources);
+
+            if(in == null)
+            {
+
+                System.out.println("NOT FOUND!");
+                //in = getClass().getResourceAsStream("/404.html");
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+        }
+        catch(Exception ex)
+        {
+            System.out.println(ex.toString());
+            //in = getClass().getResourceAsStream("/500.html");
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+
+        }
+
+        if(subResources.endsWith(".jar"))
+        {
+            return Response.ok(in, "application/java-archive").build();
+        }
+        else
+        {
+            return Response.ok(in, mediaType(subResources)).build();
+            //return Response.ok(in, MediaType.TEXT_HTML).build();
+            /*
+            return Response.ok(in, MediaType.APPLICATION_OCTET_STREAM)
+                    .header("Content-Disposition", "attachment; filename=\"" + "somefile" + "\"" ) //optional
+                    .build();
+                    */
+        }
+
+    }
+
+    public String mediaType(String file) {
+        int dot = file.lastIndexOf(".");
+        if (dot == -1) return MediaType.TEXT_PLAIN;
+        String ext = file.substring(dot + 1).toLowerCase();
+        switch (ext) {
+            case "png":
+                return "image/png";
+            case "gif":
+                return "image/gif";
+            case "json":
+                return MediaType.APPLICATION_JSON;
+            case "js":
+                return "text/javascript";
+            case "css":
+                return "text/css";
+            case "svg":
+                return MediaType.APPLICATION_SVG_XML;
+            case "html":
+                return MediaType.TEXT_HTML;
+            case "txt":
+                return MediaType.TEXT_PLAIN;
+            case "jpg":
+            case "jpeg":
+                return "image/jpg";
+            default:
+                return MediaType.TEXT_PLAIN;
+        }
+    }
+
 }

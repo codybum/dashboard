@@ -11,7 +11,10 @@ import io.cresco.dashboard.models.LoginSession;
 import io.cresco.dashboard.services.LoginSessionService;
 import io.cresco.library.messaging.MsgEvent;
 import io.cresco.library.plugin.PluginBuilder;
+import io.cresco.library.plugin.PluginService;
 import io.cresco.library.utilities.CLogger;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -21,6 +24,7 @@ import java.io.Writer;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+
 
 @Path("applications")
 public class ApplicationsController {
