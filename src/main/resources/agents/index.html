@@ -77,7 +77,7 @@
         var agent_info_modal_body = $('#agent-info-modal-body');
         $(function() {
             $.ajax({
-                url: "/regions/list"
+                url: "/services/regions/list"
             }).complete(function(data) {
                 var json = data['responseJSON'];
                 var options = '<option value="" selected>All</option>';
@@ -97,7 +97,7 @@
                     return;
                 }
                 $.ajax({
-                    url: "/agents/list/" + region
+                    url: "/services/agents/list/" + region
                 }).complete(function(data) {
                     var json = data['responseJSON'];
                     var body = '';

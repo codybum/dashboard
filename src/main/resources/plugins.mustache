@@ -103,7 +103,7 @@
     }
     $(function() {
         $.ajax({
-            url: "/regions/list/",
+            url: "/services/regions/list/",
             success: function(json) {
                 let options = '<option value="" selected>All</option>';
                 $.each(json.regions, function (i, v) {
@@ -168,7 +168,7 @@
                 }
             });
             $.ajax({
-                url: "/agents/list/" + region,
+                url: "/services/agents/list/" + region,
                 success: function(json) {
                     let options = '<option value="">All</option>';
                     $.each(json.agents, function (i, v) {

@@ -97,7 +97,7 @@
     };
     $(function() {
         $.ajax({
-            url: "/regions/list",
+            url: "/services/regions/list",
             success: function(json) {
                 var options = '<option value="" selected>All</option>';
                 $.each(json.regions, function (i, v) {

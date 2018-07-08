@@ -180,13 +180,13 @@
         }
 
         function updateRegionData() {
-            $.getJSON('/regions/list', function(data) {
+            $.getJSON('/services/regions/list', function(data) {
                 regionData = data;
             });
         }
 
         function updateAgentData() {
-            $.getJSON('/agents/list', function(data) {
+            $.getJSON('/services/agents/list', function(data) {
                 agentData = data;
             });
         }

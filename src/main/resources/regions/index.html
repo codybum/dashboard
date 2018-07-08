@@ -57,7 +57,7 @@
         var region_info_modal_body = $('#region-info-modal-body');
         $(function() {
             $.ajax({
-                url: "/regions/list"
+                url: "/services/regions/list"
             }).complete(function(data) {
                 var json = data['responseJSON'];
                 var body = '';
