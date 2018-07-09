@@ -189,6 +189,7 @@ public class AgentsController {
         try {
             if (plugin == null)
                 return Response.ok("{}", MediaType.APPLICATION_JSON_TYPE).build();
+            /*
             MsgEvent request = new MsgEvent(MsgEvent.Type.EXEC, plugin.getRegion(), plugin.getAgent(),
                     plugin.getPluginID(), "Agent List Request");
             request.setParam("src_region", plugin.getRegion());
@@ -200,6 +201,8 @@ public class AgentsController {
             request.setParam("is_regional", Boolean.TRUE.toString());
             request.setParam("is_global", Boolean.TRUE.toString());
             request.setParam("globalcmd", "true");
+            */
+            MsgEvent request = plugin.getGlobalControllerMsgEvent(MsgEvent.Type.EXEC);
             request.setParam("action", "listagents");
             request.setParam("action_region", region);
             MsgEvent response = plugin.sendRPC(request);
@@ -226,6 +229,7 @@ public class AgentsController {
         try {
             if (plugin == null)
                 return Response.ok("{\"regions\":[]}", MediaType.APPLICATION_JSON_TYPE).build();
+            /*
             MsgEvent request = new MsgEvent(MsgEvent.Type.EXEC, plugin.getRegion(), plugin.getAgent(),
                     plugin.getPluginID(), "Region List Request");
             request.setParam("src_region", plugin.getRegion());
@@ -237,6 +241,8 @@ public class AgentsController {
             request.setParam("is_regional", Boolean.TRUE.toString());
             request.setParam("is_global", Boolean.TRUE.toString());
             request.setParam("globalcmd", Boolean.TRUE.toString());
+            */
+            MsgEvent request = plugin.getGlobalControllerMsgEvent(MsgEvent.Type.EXEC);
             request.setParam("action", "resourceinfo");
             request.setParam("action_region", region);
             request.setParam("action_agent", agent);
@@ -269,7 +275,7 @@ public class AgentsController {
         try {
             if (plugin == null)
                 return Response.ok("{\"ports\":[]}", MediaType.APPLICATION_JSON_TYPE).build();
-
+            /*
             MsgEvent request = new MsgEvent(MsgEvent.Type.EXEC, plugin.getRegion(), plugin.getAgent(),
                     plugin.getPluginID(), "Region List Request");
             request.setParam("src_region", plugin.getRegion());
@@ -281,6 +287,8 @@ public class AgentsController {
             //request.setParam("is_regional", Boolean.TRUE.toString());
             //request.setParam("is_global", Boolean.TRUE.toString());
             //request.setParam("globalcmd", Boolean.TRUE.toString());
+            */
+            MsgEvent request = plugin.getGlobalControllerMsgEvent(MsgEvent.Type.EXEC);
             request.setParam("action", "getfreeports");
             request.setParam("action_portcount", count);
             MsgEvent response = plugin.sendRPC(request);

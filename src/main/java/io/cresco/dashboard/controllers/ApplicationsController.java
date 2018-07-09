@@ -151,6 +151,7 @@ public class ApplicationsController {
         try {
             if (plugin == null)
                 return Response.ok("{}", MediaType.APPLICATION_JSON_TYPE).build();
+            /*
             MsgEvent request = new MsgEvent(MsgEvent.Type.EXEC, plugin.getRegion(), plugin.getAgent(),
                     plugin.getPluginID(), "Agent List Request");
             request.setParam("src_region", plugin.getRegion());
@@ -162,6 +163,8 @@ public class ApplicationsController {
             request.setParam("is_regional", Boolean.TRUE.toString());
             request.setParam("is_global", Boolean.TRUE.toString());
             request.setParam("globalcmd", "true");
+            */
+            MsgEvent request = plugin.getGlobalControllerMsgEvent(MsgEvent.Type.EXEC);
             request.setParam("action", "getgpipelinestatus");
             MsgEvent response = plugin.sendRPC(request);
             if (response == null)
@@ -188,6 +191,7 @@ public class ApplicationsController {
         try {
             if (plugin == null)
                 return Response.ok("{}", MediaType.APPLICATION_JSON_TYPE).build();
+            /*
             MsgEvent request = new MsgEvent(MsgEvent.Type.CONFIG, plugin.getRegion(), plugin.getAgent(),
                     plugin.getPluginID(), "Agent List Request");
             request.setParam("src_region", plugin.getRegion());
@@ -199,6 +203,8 @@ public class ApplicationsController {
             request.setParam("is_regional", Boolean.TRUE.toString());
             request.setParam("is_global", Boolean.TRUE.toString());
             request.setParam("globalcmd", "true");
+            */
+            MsgEvent request = plugin.getGlobalControllerMsgEvent(MsgEvent.Type.EXEC);
             request.setParam("action", "gpipelinesubmit");
             request.setParam("action_tenantid", tenant);
             request.setCompressedParam("action_gpipeline", pipeline);
@@ -227,6 +233,7 @@ public class ApplicationsController {
         try {
             if (plugin == null)
                 return Response.ok("{}", MediaType.APPLICATION_JSON_TYPE).build();
+            /*
             MsgEvent request = new MsgEvent(MsgEvent.Type.EXEC, plugin.getRegion(), plugin.getAgent(),
                     plugin.getPluginID(), "Agent List Request");
             request.setParam("src_region", plugin.getRegion());
@@ -238,6 +245,8 @@ public class ApplicationsController {
             request.setParam("is_regional", Boolean.TRUE.toString());
             request.setParam("is_global", Boolean.TRUE.toString());
             request.setParam("globalcmd", "true");
+            */
+            MsgEvent request = plugin.getGlobalControllerMsgEvent(MsgEvent.Type.EXEC);
             request.setParam("action", "getgpipeline");
             request.setParam("action_pipelineid", id);
             MsgEvent response = plugin.sendRPC(request);
@@ -264,6 +273,7 @@ public class ApplicationsController {
         try {
             if (plugin == null)
                 return Response.ok("{}", MediaType.APPLICATION_JSON_TYPE).build();
+            /*
             MsgEvent request = new MsgEvent(MsgEvent.Type.EXEC, plugin.getRegion(), plugin.getAgent(),
                     plugin.getPluginID(), "Agent List Request");
             request.setParam("src_region", plugin.getRegion());
@@ -275,6 +285,8 @@ public class ApplicationsController {
             request.setParam("is_regional", Boolean.TRUE.toString());
             request.setParam("is_global", Boolean.TRUE.toString());
             request.setParam("globalcmd", "true");
+            */
+            MsgEvent request = plugin.getGlobalControllerMsgEvent(MsgEvent.Type.EXEC);
             request.setParam("action", "getisassignmentinfo");
             request.setParam("action_inodeid", inode_id);
             request.setParam("action_resourceid", resource_id);
@@ -312,6 +324,7 @@ public class ApplicationsController {
         try {
             if (plugin == null)
                 return Response.ok("{}", MediaType.APPLICATION_JSON_TYPE).build();
+            /*
             MsgEvent request = new MsgEvent(MsgEvent.Type.EXEC, plugin.getRegion(), plugin.getAgent(),
                     plugin.getPluginID(), "Agent List Request");
             request.setParam("src_region", plugin.getRegion());
@@ -323,6 +336,8 @@ public class ApplicationsController {
             request.setParam("is_regional", Boolean.TRUE.toString());
             request.setParam("is_global", Boolean.TRUE.toString());
             request.setParam("globalcmd", "true");
+            */
+            MsgEvent request = plugin.getGlobalControllerMsgEvent(MsgEvent.Type.EXEC);
             request.setParam("action", "getgpipelineexport");
             request.setParam("action_pipelineid", id);
             MsgEvent response = plugin.sendRPC(request);
@@ -348,6 +363,7 @@ public class ApplicationsController {
         try {
             if (plugin == null)
                 return Response.ok("{}", MediaType.APPLICATION_JSON_TYPE).build();
+            /*
             MsgEvent request = new MsgEvent(MsgEvent.Type.CONFIG, plugin.getRegion(), plugin.getAgent(),
                     plugin.getPluginID(), "Agent List Request");
             request.setParam("src_region", plugin.getRegion());
@@ -359,6 +375,8 @@ public class ApplicationsController {
             request.setParam("is_regional", Boolean.TRUE.toString());
             request.setParam("is_global", Boolean.TRUE.toString());
             request.setParam("globalcmd", "true");
+            */
+            MsgEvent request = plugin.getGlobalControllerMsgEvent(MsgEvent.Type.EXEC);
             request.setParam("action", "gpipelineremove");
             request.setParam("action_pipelineid", id);
             MsgEvent response = plugin.sendRPC(request);

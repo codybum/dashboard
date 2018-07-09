@@ -130,6 +130,7 @@ public class PluginsController {
         try {
             if (plugin == null)
                 return Response.ok("{}", MediaType.APPLICATION_JSON_TYPE).build();
+            /*
             MsgEvent request = new MsgEvent(MsgEvent.Type.EXEC, plugin.getRegion(), plugin.getAgent(),
                     plugin.getPluginID(), "Agent List Request");
             request.setParam("src_region", plugin.getRegion());
@@ -141,6 +142,8 @@ public class PluginsController {
             request.setParam("is_regional", Boolean.TRUE.toString());
             request.setParam("is_global", Boolean.TRUE.toString());
             request.setParam("globalcmd", "true");
+            */
+            MsgEvent request = plugin.getGlobalControllerMsgEvent(MsgEvent.Type.EXEC);
             request.setParam("action", "plugininfo");
             request.setParam("action_region", region);
             request.setParam("action_agent", agent);
@@ -170,6 +173,7 @@ public class PluginsController {
         try {
             if (plugin == null)
                 return Response.ok("{}", MediaType.APPLICATION_JSON_TYPE).build();
+            /*
             MsgEvent request = new MsgEvent(MsgEvent.Type.EXEC, plugin.getRegion(), plugin.getAgent(),
                     plugin.getPluginID(), "Agent List Request");
             request.setParam("src_region", plugin.getRegion());
@@ -181,6 +185,8 @@ public class PluginsController {
             request.setParam("is_regional", Boolean.TRUE.toString());
             request.setParam("is_global", Boolean.TRUE.toString());
             request.setParam("globalcmd", "true");
+            */
+            MsgEvent request = plugin.getGlobalControllerMsgEvent(MsgEvent.Type.EXEC);
             request.setParam("action", "pluginkpi");
             request.setParam("action_region", region);
             request.setParam("action_agent", agent);
@@ -208,6 +214,7 @@ public class PluginsController {
         try {
             if (plugin == null)
                 return Response.ok("{}", MediaType.APPLICATION_JSON_TYPE).build();
+            /*
             MsgEvent request = new MsgEvent(MsgEvent.Type.EXEC, plugin.getRegion(), plugin.getAgent(),
                     plugin.getPluginID(), "Agent List Request");
             request.setParam("src_region", plugin.getRegion());
@@ -219,6 +226,9 @@ public class PluginsController {
             request.setParam("is_regional", Boolean.TRUE.toString());
             request.setParam("is_global", Boolean.TRUE.toString());
             request.setParam("globalcmd", "true");
+            */
+
+            MsgEvent request = plugin.getGlobalControllerMsgEvent(MsgEvent.Type.EXEC);
             request.setParam("action", "listplugins");
             MsgEvent response = plugin.sendRPC(request);
             if (response == null)
@@ -243,6 +253,7 @@ public class PluginsController {
         try {
             if (plugin == null)
                 return Response.ok("{}", MediaType.APPLICATION_JSON_TYPE).build();
+            /*
             MsgEvent request = new MsgEvent(MsgEvent.Type.EXEC, plugin.getRegion(), plugin.getAgent(),
                     plugin.getPluginID(), "Agent List Request");
             request.setParam("src_region", plugin.getRegion());
@@ -254,6 +265,8 @@ public class PluginsController {
             request.setParam("is_regional", Boolean.TRUE.toString());
             request.setParam("is_global", Boolean.TRUE.toString());
             request.setParam("globalcmd", "true");
+            */
+            MsgEvent request = plugin.getGlobalControllerMsgEvent(MsgEvent.Type.EXEC);
             request.setParam("action", "listplugins");
             request.setParam("action_region", region);
             MsgEvent response = plugin.sendRPC(request);
@@ -280,6 +293,7 @@ public class PluginsController {
         try {
             if (plugin == null)
                 return Response.ok("{}", MediaType.APPLICATION_JSON_TYPE).build();
+            /*
             MsgEvent request = new MsgEvent(MsgEvent.Type.EXEC, plugin.getRegion(), plugin.getAgent(),
                     plugin.getPluginID(), "Agent List Request");
             request.setParam("src_region", plugin.getRegion());
@@ -291,6 +305,8 @@ public class PluginsController {
             request.setParam("is_regional", Boolean.TRUE.toString());
             request.setParam("is_global", Boolean.TRUE.toString());
             request.setParam("globalcmd", "true");
+            */
+            MsgEvent request = plugin.getGlobalControllerMsgEvent(MsgEvent.Type.EXEC);
             request.setParam("action", "listplugins");
             request.setParam("action_region", region);
             request.setParam("action_agent", agent);
@@ -321,6 +337,7 @@ public class PluginsController {
         try {
             if (plugin == null)
                 return Response.ok("{}", MediaType.APPLICATION_JSON_TYPE).build();
+            /*
             MsgEvent request = new MsgEvent(MsgEvent.Type.EXEC, plugin.getRegion(), plugin.getAgent(),
                     plugin.getPluginID(), "Plugin List by Type Request");
             request.setParam("src_region", plugin.getRegion());
@@ -332,6 +349,8 @@ public class PluginsController {
             request.setParam("is_regional", Boolean.TRUE.toString());
             request.setParam("is_global", Boolean.TRUE.toString());
             request.setParam("globalcmd", "true");
+            */
+            MsgEvent request = plugin.getGlobalControllerMsgEvent(MsgEvent.Type.EXEC);
             request.setParam("action", "listpluginsbytype");
             request.setParam("action_plugintype_id", actionPluginTypeId);
             request.setParam("action_plugintype_value", actionpluginTypeValue);
@@ -418,6 +437,7 @@ public class PluginsController {
         try {
             if (plugin == null)
                 return Response.ok("{}", MediaType.APPLICATION_JSON_TYPE).build();
+            /*
             MsgEvent request = new MsgEvent(MsgEvent.Type.EXEC, plugin.getRegion(), plugin.getAgent(),
                     plugin.getPluginID(), "Plugin List by Type Request");
             request.setParam("src_region", plugin.getRegion());
@@ -429,6 +449,8 @@ public class PluginsController {
             request.setParam("is_regional", Boolean.TRUE.toString());
             request.setParam("is_global", Boolean.TRUE.toString());
             request.setParam("globalcmd", "true");
+            */
+            MsgEvent request = plugin.getGlobalControllerMsgEvent(MsgEvent.Type.EXEC);
             request.setParam("action", "listpluginsrepo");
             MsgEvent response = plugin.sendRPC(request);
             if (response == null)
@@ -452,6 +474,7 @@ public class PluginsController {
         try {
             if (plugin == null)
                 return Response.ok("{}", MediaType.APPLICATION_JSON_TYPE).build();
+            /*
             MsgEvent request = new MsgEvent(MsgEvent.Type.CONFIG, plugin.getRegion(), plugin.getAgent(),
                     plugin.getPluginID(), "Plugin Inventory Request");
             request.setParam("src_region", plugin.getRegion());
@@ -459,6 +482,8 @@ public class PluginsController {
             request.setParam("src_plugin", plugin.getPluginID());
             request.setParam("dst_region", plugin.getRegion());
             request.setParam("dst_agent", plugin.getAgent());
+            */
+            MsgEvent request = plugin.getGlobalControllerMsgEvent(MsgEvent.Type.EXEC);
             request.setParam("configtype", "plugininventory");
             MsgEvent response = plugin.sendRPC(request);
             if (response == null)
@@ -501,6 +526,9 @@ public class PluginsController {
                     MediaType.APPLICATION_JSON_TYPE).build();
         logger.info("url: {}, config: {}", jObject.get("url").getAsString(),
                 jObject.get("config").getAsString());
+
+        MsgEvent addPlugin = plugin.getAgentMsgEvent(MsgEvent.Type.CONFIG);
+        /*
         MsgEvent addPlugin = new MsgEvent(MsgEvent.Type.CONFIG, plugin.getRegion(),
                 plugin.getAgent(), plugin.getPluginID(),
                 "Issuing command to add new plugin to agent");
@@ -509,6 +537,7 @@ public class PluginsController {
         addPlugin.setParam("src_plugin", plugin.getPluginID());
         addPlugin.setParam("dst_region", plugin.getRegion());
         addPlugin.setParam("dst_agent", plugin.getAgent());
+        */
         addPlugin.setParam("configtype", "pluginadd");
         addPlugin.setParam("pluginurl", jObject.get("url").getAsString());
         addPlugin.setParam("configparams", jObject.get("config").getAsString());

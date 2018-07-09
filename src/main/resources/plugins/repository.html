@@ -11,7 +11,7 @@
 <script type="text/javascript">
     $(function () {
         $.ajax({
-            url: "/plugins/list"
+            url: "/services/plugins/list"
         }).done(function(data) {
             var pluginsHTML = '';
             $.each(data, function(i, v) {

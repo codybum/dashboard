@@ -43,6 +43,7 @@ public class GlobalController {
         try {
             if (plugin == null)
                 return Response.ok("{\"regions\":[]}", MediaType.APPLICATION_JSON_TYPE).build();
+            /*
             MsgEvent request = new MsgEvent(MsgEvent.Type.EXEC, plugin.getRegion(), plugin.getAgent(),
                     plugin.getPluginID(), "Region List Request");
             request.setParam("src_region", plugin.getRegion());
@@ -54,6 +55,8 @@ public class GlobalController {
             request.setParam("is_regional", Boolean.TRUE.toString());
             request.setParam("is_global", Boolean.TRUE.toString());
             request.setParam("globalcmd", Boolean.TRUE.toString());
+            */
+            MsgEvent request = plugin.getGlobalControllerMsgEvent(MsgEvent.Type.EXEC);
             request.setParam("action", "resourceinfo");
             MsgEvent response = plugin.sendRPC(request);
             if (response == null)

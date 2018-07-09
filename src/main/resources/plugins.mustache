@@ -128,7 +128,7 @@
                 agents.prop('disabled', true);
                 agents_row.css('display', 'none');
                 $.ajax({
-                    url: "/plugins/list/",
+                    url: "/services/plugins/list/",
                     success: function(json) {
                         let body = '';
                         $.each(json.plugins, function (i, v) {
@@ -149,7 +149,7 @@
                 return;
             }
             $.ajax({
-                url: "/plugins/list/" + region,
+                url: "/services/plugins/list/" + region,
                 success: function(json) {
                     let body = '';
                     $.each(json.plugins, function (i, v) {
@@ -193,7 +193,7 @@
                 return;
             }
             $.ajax({
-                url: "/plugins/list/" + region + "/" + agent,
+                url: "/services/plugins/list/" + region + "/" + agent,
                 success: function(json) {
                     let body = '';
                     $.each(json.plugins, function (i, v) {
