@@ -6,6 +6,7 @@ import com.github.mustachejava.MustacheFactory;
 import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
+import io.cresco.dashboard.Plugin;
 import io.cresco.dashboard.filters.AuthenticationFilter;
 import io.cresco.dashboard.models.LoginSession;
 import io.cresco.dashboard.services.AlertService;
@@ -54,14 +55,26 @@ import java.util.Map;
 @Path("/")
 //@ApplicationPath("/")
 public class RootController {
-    private static PluginBuilder plugin = null;
-    private static CLogger logger = null;
+    //private static PluginBuilder plugin = null;
+    //private static CLogger logger = null;
+    private PluginBuilder plugin;
+    private CLogger logger;
+
     private static final String LOGIN_ERROR_COOKIE_NAME = "crescoAgentLoginError";
     public static final String LOGIN_REDIRECT_COOKIE_NAME = "crescoAgentLoginRedirect";
 
+    public RootController() {
+        if(plugin == null) {
+            if(Plugin.pluginBuilder != null) {
+                plugin = Plugin.pluginBuilder;
+                logger = plugin.getLogger(RootController.class.getName(), CLogger.Level.Trace);
+            }
+        }
+    }
+
     public static void connectPlugin(PluginBuilder inPlugin) {
-        plugin = inPlugin;
-        logger = plugin.getLogger(RootController.class.getName(),CLogger.Level.Info);
+        //plugin = inPlugin;
+        //logger = plugin.getLogger(RootController.class.getName(),CLogger.Level.Info);
         //logger = new CLogger(RootController.class, in_plugin.getMsgOutQueue(), in_plugin.getRegion(), in_plugin.getAgent(), in_plugin.getPluginID(), CLogger.Level.Trace);
     }
 
@@ -226,7 +239,6 @@ public class RootController {
     @Produces(MediaType.TEXT_HTML)
     public Response getIncludes(@PathParam("subResources") String subResources)
     {
-        System.out.println("Requesting file: " + subResources);
 
         subResources = "/vendors/" + subResources;
 
@@ -275,7 +287,6 @@ public class RootController {
     @Produces(MediaType.TEXT_HTML)
     public Response getCSS(@PathParam("subResources") String subResources)
     {
-        System.out.println("Requesting file: " + subResources);
 
         subResources = "/css/" + subResources;
 
@@ -324,7 +335,6 @@ public class RootController {
     @Produces(MediaType.TEXT_HTML)
     public Response getJS(@PathParam("subResources") String subResources)
     {
-        System.out.println("Requesting file: " + subResources);
 
         subResources = "/js/" + subResources;
 
@@ -374,7 +384,6 @@ public class RootController {
     @Produces(MediaType.TEXT_HTML)
     public Response getImg(@PathParam("subResources") String subResources)
     {
-        System.out.println("Requesting file: " + subResources);
 
         subResources = "/img/" + subResources;
 
@@ -422,7 +431,6 @@ public class RootController {
     @Produces(MediaType.TEXT_HTML)
     public Response getVendors(@PathParam("subResources") String subResources)
     {
-        System.out.println("Requesting file: " + subResources);
 
         subResources = "/vendors/" + subResources;
 

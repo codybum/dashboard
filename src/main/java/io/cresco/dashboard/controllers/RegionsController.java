@@ -6,6 +6,7 @@ import com.github.mustachejava.MustacheFactory;
 import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
+import io.cresco.dashboard.Plugin;
 import io.cresco.dashboard.filters.AuthenticationFilter;
 import io.cresco.dashboard.models.LoginSession;
 import io.cresco.dashboard.services.LoginSessionService;
@@ -16,6 +17,7 @@ import io.cresco.library.utilities.CLogger;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import javax.swing.plaf.synth.Region;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -27,20 +29,34 @@ import java.util.Map;
 
 
 @Component(service = Object.class,
+        property="dashboard=regions",
         reference = @Reference(
                 name="java.lang.Object",
                 service=Object.class,
-                target="(dashboard=root)"
+                target="(dashboard=nfx)"
         )
 )
+
 @Path("regions")
 public class RegionsController {
-    private static PluginBuilder plugin = null;
-    private static CLogger logger = null;
+    //private static PluginBuilder plugin = null;
+    //private static CLogger logger = null;
+
+    private PluginBuilder plugin;
+    private CLogger logger;
+
+    public RegionsController() {
+        if(plugin == null) {
+            if(Plugin.pluginBuilder != null) {
+                plugin = Plugin.pluginBuilder;
+                logger = plugin.getLogger(RegionsController.class.getName(), CLogger.Level.Trace);
+            }
+        }
+    }
 
     public static void connectPlugin(PluginBuilder inPlugin) {
-        plugin = inPlugin;
-        logger = plugin.getLogger(RegionsController.class.getName(),CLogger.Level.Info);
+        //plugin = inPlugin;
+        //logger = plugin.getLogger(RegionsController.class.getName(),CLogger.Level.Info);
         //logger = new CLogger(RegionsController.class, plugin.getMsgOutQueue(), plugin.getRegion(),
         //        plugin.getAgent(), plugin.getPluginID(), CLogger.Level.Trace);
     }

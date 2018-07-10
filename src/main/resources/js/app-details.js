@@ -282,9 +282,9 @@ function restart() {
             if (mouseup_node === mousedown_node) {
                 if (active_menu == null && selected_node === mouseup_node) {
                     var data = [
-                        {icon: "/services/img/icons/sitemap.svg", favicon: "wrench", text: "Region Status", node: d, action: function(d) { window.location.href = `/regions/details/${d.data.node.params.region}`; }},
-                        {icon: "/services/img/icons/microchip.svg", favicon: "wrench", text: "Agent Status", node: d, action: function(d) { window.location.href = `/agents/details/${d.data.node.params.region}/${d.data.node.params.agent}`; }},
-                        {icon: "/services/img/icons/plug.svg", favicon: "trash-alt", text: "Plugin Status", node: d, action: function(d) { window.location.href = `/plugins/details/${d.data.node.params.region}/${d.data.node.params.agent}/${d.data.node.params.plugin}`; }}
+                        {icon: "/services/img/icons/sitemap.svg", favicon: "wrench", text: "Region Status", node: d, action: function(d) { window.location.href = `/services/regions/details/${d.data.node.params.region}`; }},
+                        {icon: "/services/img/icons/microchip.svg", favicon: "wrench", text: "Agent Status", node: d, action: function(d) { window.location.href = `/services/agents/details/${d.data.node.params.region}/${d.data.node.params.agent}`; }},
+                        {icon: "/services/img/icons/plug.svg", favicon: "trash-alt", text: "Plugin Status", node: d, action: function(d) { window.location.href = `/services/plugins/details/${d.data.node.params.region}/${d.data.node.params.agent}/${d.data.node.params.plugin}`; }}
                     ];
 
                     active_menu = new d3.radialMenu().radius(node_size + 1)

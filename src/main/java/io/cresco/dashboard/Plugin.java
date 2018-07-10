@@ -12,7 +12,7 @@ import io.cresco.library.plugin.PluginBuilder;
 import io.cresco.library.plugin.PluginService;
 
 
-
+import io.cresco.library.utilities.CLogger;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.annotations.*;
@@ -32,16 +32,15 @@ import java.util.logging.Logger;
         configurationPolicy = ConfigurationPolicy.REQUIRE,
         servicefactory = true,
         property="dashboard=core",
-        reference= { @Reference(name="io.cresco.library.agent.AgentService", service=AgentService.class),
-                @Reference(name="com.eclipsesource.jaxrs.publisher.internal.JAXRSConnector") }
+        reference= { @Reference(name="io.cresco.library.agent.AgentService", service=AgentService.class)}
 )
 
 public class Plugin implements PluginService {
 
     public BundleContext context;
-    private PluginBuilder pluginBuilder;
+    public static PluginBuilder pluginBuilder;
     private Executor executor;
-    //private CLogger logger;
+    private CLogger logger;
     //private HttpService server;
     public String repoPath = null;
     private ConfigurationAdmin configurationAdmin;
@@ -50,22 +49,23 @@ public class Plugin implements PluginService {
     @Activate
     void activate(BundleContext context, Map<String,Object> map) {
 
-
         this.context = context;
 
-        System.out.println("Started PluginID:" + (String) map.get("pluginID"));
 
         try {
             pluginBuilder = new PluginBuilder(this.getClass().getName(), context, map);
-            //this.logger = pluginBuilder.getLogger(Plugin.class.getName(),CLogger.Level.Info);
+            this.logger = pluginBuilder.getLogger(Plugin.class.getName(),CLogger.Level.Info);
             this.executor = new PluginExecutor(pluginBuilder);
             pluginBuilder.setExecutor(executor);
 
             while(!pluginBuilder.getAgentService().getAgentState().isActive()) {
-                //logger.info("Plugin " + pluginBuilder.getPluginID() + " waiting on Agent Init");
-                System.out.println("Plugin " + pluginBuilder.getPluginID() + " waiting on Agent Init");
+                logger.info("Plugin " + pluginBuilder.getPluginID() + " waiting on Agent Init");
+                //System.out.println("Plugin " + pluginBuilder.getPluginID() + " waiting on Agent Init");
                 Thread.sleep(1000);
             }
+
+            /*
+            logger.info("Plugin " + pluginBuilder.getPluginID() + " Setting Classes");
 
             AuthenticationFilter.connectPlugin(pluginBuilder);
             RootController.connectPlugin(pluginBuilder);
@@ -76,6 +76,8 @@ public class Plugin implements PluginService {
             GlobalController.connectPlugin(pluginBuilder);
             ApplicationsController.connectPlugin(pluginBuilder);
 
+            logger.info("Plugin " + pluginBuilder.getPluginID() + " Classes Set");
+            */
 
             /*
             try {

@@ -7,6 +7,8 @@ import com.google.gson.Gson;
 import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
+import io.cresco.dashboard.Activator;
+import io.cresco.dashboard.Plugin;
 import io.cresco.dashboard.filters.AuthenticationFilter;
 import io.cresco.dashboard.models.LoginSession;
 import io.cresco.dashboard.services.LoginSessionService;
@@ -34,6 +36,7 @@ import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 
+/*
 @Component(service = Object.class,
         reference = @Reference(
                 name="java.lang.Object",
@@ -41,16 +44,39 @@ import java.util.concurrent.ThreadLocalRandom;
                 target="(dashboard=root)"
         )
 )
+*/
+
+
+@Component(service = Object.class,
+        property="dashboard=agents",
+        reference = @Reference(
+                name="java.lang.Object",
+                service=Object.class,
+                target="(dashboard=nfx)"
+        )
+)
+
+
 @Path("agents")
 public class AgentsController {
-    private static PluginBuilder plugin = null;
-    private static CLogger logger = null;
-    private static Gson gson = null;
+    private static PluginBuilder plugin;
+    private static CLogger logger;
+    //private static Gson gson = gson = new Gson();
 
+    public AgentsController() {
+        if(plugin == null) {
+            if(Plugin.pluginBuilder != null) {
+                plugin = Plugin.pluginBuilder;
+                logger = plugin.getLogger(AgentsController.class.getName(), CLogger.Level.Trace);
+            }
+        }
+    }
     public static void connectPlugin(PluginBuilder inPlugin) {
-        plugin = inPlugin;
-        logger = plugin.getLogger(AgentsController.class.getName(), CLogger.Level.Trace);
-        gson = new Gson();
+        //plugin = inPlugin;
+        //logger = plugin.getLogger(AgentsController.class.getName(), CLogger.Level.Trace);
+        //gson = new Gson();
+
+
     }
 
     @GET
@@ -125,12 +151,16 @@ public class AgentsController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response list() {
         logger.trace("Call to list()");
+        System.out.println("AGETN LIST 0");
         try {
+            System.out.println("AGETN LIST 1");
             if (plugin == null)
                 return Response.ok("{}", MediaType.APPLICATION_JSON_TYPE).build();
 
+            System.out.println("AGETN LIST 2");
             MsgEvent request = plugin.getGlobalControllerMsgEvent(MsgEvent.Type.EXEC);
             request.setParam("action", "listagents");
+            System.out.println("AGETN LIST 3");
             /*
             MsgEvent request = new MsgEvent(MsgEvent.Type.EXEC, plugin.getRegion(), plugin.getAgent(),
                     plugin.getPluginID(), "Agent List Request");
@@ -147,6 +177,7 @@ public class AgentsController {
             */
 
             MsgEvent response = plugin.sendRPC(request);
+            System.out.println("AGETN LIST 4");
             if (response == null)
                 return Response.ok("{\"error\":\"Cresco rpc response was null\"}",
                         MediaType.APPLICATION_JSON_TYPE).build();

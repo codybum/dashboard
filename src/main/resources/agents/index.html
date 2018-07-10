@@ -151,7 +151,7 @@
         });
         function resources(region, agent) {
             $.ajax({
-                url: "/agents/resources/" + region + "/" + agent
+                url: "/services/agents/resources/" + region + "/" + agent
             }).complete(function(data) {
                 agent_info_modal_title.html("Resources: <br>" + region + "<br>" + agent);
                 var json = data['responseJSON'];

@@ -6,12 +6,12 @@ import com.github.mustachejava.MustacheFactory;
 import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
+import io.cresco.dashboard.Plugin;
 import io.cresco.dashboard.filters.AuthenticationFilter;
 import io.cresco.dashboard.models.LoginSession;
 import io.cresco.dashboard.services.LoginSessionService;
 import io.cresco.library.messaging.MsgEvent;
 import io.cresco.library.plugin.PluginBuilder;
-import io.cresco.library.plugin.PluginService;
 import io.cresco.library.utilities.CLogger;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -27,21 +27,35 @@ import java.util.Map;
 
 
 @Component(service = Object.class,
+        property="dashboard=applications",
         reference = @Reference(
                 name="java.lang.Object",
                 service=Object.class,
-                target="(dashboard=root)"
+                target="(dashboard=nfx)"
         )
 )
 
 @Path("applications")
 public class ApplicationsController {
-    private static PluginBuilder plugin = null;
-    private static CLogger logger = null;
+    //private static PluginBuilder plugin = null;
+    //private static CLogger logger = null;
+
+    private PluginBuilder plugin;
+    private CLogger logger;
+
+    public ApplicationsController() {
+        if(plugin == null) {
+            if(Plugin.pluginBuilder != null) {
+                plugin = Plugin.pluginBuilder;
+                logger = plugin.getLogger(ApplicationsController.class.getName(), CLogger.Level.Trace);
+            }
+        }
+    }
 
     public static void connectPlugin(PluginBuilder inPlugin) {
-        plugin = inPlugin;
-        logger = plugin.getLogger(ApplicationsController.class.getName(),CLogger.Level.Info);
+        //plugin = inPlugin;
+        //logger = plugin.getLogger(ApplicationsController.class.getName(),CLogger.Level.Info);
+        //logger.info("Set STATIC logger : applications");
         //logger = new CLogger(ApplicationsController.class, plugin.getMsgOutQueue(), plugin.getRegion(),
         //        plugin.getAgent(), plugin.getPluginID(), CLogger.Level.Trace);
     }
@@ -164,9 +178,17 @@ public class ApplicationsController {
             request.setParam("is_global", Boolean.TRUE.toString());
             request.setParam("globalcmd", "true");
             */
+
+            System.out.println("IN APP : LIST 0");
+
             MsgEvent request = plugin.getGlobalControllerMsgEvent(MsgEvent.Type.EXEC);
             request.setParam("action", "getgpipelinestatus");
+            System.out.println("IN APP : LIST 1");
+
             MsgEvent response = plugin.sendRPC(request);
+
+            System.out.println("IN APP : LIST 2");
+
             if (response == null)
                 return Response.ok("{\"error\":\"Cresco rpc response was null\"}",
                         MediaType.APPLICATION_JSON_TYPE).build();

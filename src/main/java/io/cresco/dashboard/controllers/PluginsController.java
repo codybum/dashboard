@@ -10,6 +10,7 @@ import com.google.gson.JsonParser;
 import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
+import io.cresco.dashboard.Plugin;
 import io.cresco.dashboard.filters.AuthenticationFilter;
 import io.cresco.dashboard.models.LoginSession;
 import io.cresco.dashboard.services.LoginSessionService;
@@ -29,6 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+/*
 @Component(service = Object.class,
         reference = @Reference(
                 name="java.lang.Object",
@@ -36,19 +38,40 @@ import java.util.Scanner;
                 target="(dashboard=root)"
         )
 )
+*/
+
+@Component(service = Object.class,
+        property="dashboard=plugins",
+        reference = @Reference(
+                name="java.lang.Object",
+                service=Object.class,
+                target="(dashboard=nfx)"
+        )
+)
+
 @Path("plugins")
 public class PluginsController {
-    private static PluginBuilder plugin = null;
-    private static CLogger logger = null;
-    private static Gson gson;
+    //private static PluginBuilder plugin = null;
+    //private static CLogger logger = null;
+    //private static Gson gson;
+    private PluginBuilder plugin;
+    private CLogger logger;
 
+    public PluginsController() {
+        if(plugin == null) {
+            if(Plugin.pluginBuilder != null) {
+                plugin = Plugin.pluginBuilder;
+                logger = plugin.getLogger(PluginsController.class.getName(), CLogger.Level.Trace);
+            }
+        }
+    }
 
     public static void connectPlugin(PluginBuilder inPlugin) {
-        plugin = inPlugin;
-        logger = plugin.getLogger(PluginsController.class.getName(),CLogger.Level.Info);
+        //plugin = inPlugin;
+        //logger = plugin.getLogger(PluginsController.class.getName(),CLogger.Level.Info);
         //logger = new CLogger(PluginsController.class, plugin.getMsgOutQueue(), plugin.getRegion(), plugin.getAgent(),
         //        plugin.getPluginID(), CLogger.Level.Trace);
-        gson = new Gson();
+//        gson = new Gson();
     }
 
     @GET

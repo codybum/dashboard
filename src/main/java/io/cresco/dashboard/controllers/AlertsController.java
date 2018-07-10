@@ -3,7 +3,9 @@ package io.cresco.dashboard.controllers;
 import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
+import io.cresco.dashboard.Plugin;
 import io.cresco.dashboard.filters.AuthenticationFilter;
+import io.cresco.dashboard.models.Alert;
 import io.cresco.dashboard.models.LoginSession;
 import io.cresco.dashboard.services.AlertService;
 import io.cresco.dashboard.services.LoginSessionService;
@@ -26,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/*
 @Component(service = Object.class,
         reference = @Reference(
                 name="java.lang.Object",
@@ -33,14 +36,34 @@ import java.util.Map;
                 target="(dashboard=root)"
         )
 )
+*/
+
+@Component(service = Object.class,
+        property="dashboard=alerts",
+        reference = @Reference(
+                name="java.lang.Object",
+                service=Object.class,
+                target="(dashboard=nfx)"
+        )
+)
+
 @Path("alerts")
 public class AlertsController {
     private static PluginBuilder plugin = null;
     private static CLogger logger = null;
 
+    public AlertsController() {
+        if(plugin == null) {
+            if(Plugin.pluginBuilder != null) {
+                plugin = Plugin.pluginBuilder;
+                logger = plugin.getLogger(AlertsController.class.getName(), CLogger.Level.Trace);
+            }
+        }
+    }
+
     public static void connectPlugin(PluginBuilder inPlugin) {
-        plugin = inPlugin;
-        logger = plugin.getLogger(AlertsController.class.getName(),CLogger.Level.Info);
+        //plugin = inPlugin;
+        //logger = plugin.getLogger(AlertsController.class.getName(),CLogger.Level.Info);
         //plugin = inPlugin;
         //logger = new CLogger(AlertsController.class, plugin.getMsgOutQueue(), plugin.getRegion(), plugin.getAgent(), plugin.getPluginID(), CLogger.Level.Trace);
     }

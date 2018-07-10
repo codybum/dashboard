@@ -1,6 +1,7 @@
 package io.cresco.dashboard.controllers;
 
 
+import io.cresco.dashboard.Plugin;
 import io.cresco.library.messaging.MsgEvent;
 import io.cresco.library.plugin.PluginBuilder;
 import io.cresco.library.plugin.PluginService;
@@ -16,6 +17,8 @@ import javax.ws.rs.core.Response;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+
+/*
 @Component(service = Object.class,
         reference = @Reference(
                 name="java.lang.Object",
@@ -23,14 +26,38 @@ import java.io.StringWriter;
                 target="(dashboard=root)"
         )
 )
+*/
+
+@Component(service = Object.class,
+        property="dashboard=global",
+        reference = @Reference(
+                name="java.lang.Object",
+                service=Object.class,
+                target="(dashboard=nfx)"
+        )
+)
+
 @Path("global")
 public class GlobalController {
-    private static PluginBuilder plugin = null;
-    private static CLogger logger = null;
+    //private static PluginBuilder plugin = null;
+    //private static CLogger logger = null;
+
+    private PluginBuilder plugin;
+    private CLogger logger;
+
+    public GlobalController() {
+        if(plugin == null) {
+            if(Plugin.pluginBuilder != null) {
+                plugin = Plugin.pluginBuilder;
+                logger = plugin.getLogger(GlobalController.class.getName(), CLogger.Level.Trace);
+            }
+        }
+    }
+
 
     public static void connectPlugin(PluginBuilder inPlugin) {
-        plugin = inPlugin;
-        logger = plugin.getLogger(GlobalController.class.getName(),CLogger.Level.Info);
+       // plugin = inPlugin;
+       // logger = plugin.getLogger(GlobalController.class.getName(),CLogger.Level.Info);
         //logger = new CLogger(RegionsController.class, plugin.getMsgOutQueue(), plugin.getRegion(),
         //        plugin.getAgent(), plugin.getPluginID(), CLogger.Level.Trace);
     }

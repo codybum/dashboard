@@ -1,6 +1,8 @@
 package io.cresco.dashboard.filters;
 
 
+import io.cresco.dashboard.Plugin;
+import io.cresco.dashboard.controllers.ApplicationsController;
 import io.cresco.dashboard.controllers.RootController;
 import io.cresco.dashboard.models.LoginSession;
 import io.cresco.dashboard.services.LoginSessionService;
@@ -42,19 +44,13 @@ public class AuthenticationFilter implements ContainerRequestFilter {
     public static final String SESSION_COOKIE_NAME = "crescoAgentSessionID";
     private static final int TIMEOUT_IN_MINUTES = 120;
     private static Response REDIRECT_LOGOUT;
-    private static CLogger logger;
-    private static List<String> whitelist;
+    //private static CLogger logger;
+
+    private PluginBuilder plugin = Plugin.pluginBuilder;
+    private CLogger logger = plugin.getLogger(AuthenticationFilter.class.getName(), CLogger.Level.Trace);
 
     public static void connectPlugin(PluginBuilder plugin) {
-       // logger = new CLogger(AuthenticationFilter.class, plugin.getMsgOutQueue(), plugin.getRegion(), plugin.getAgent(), plugin.getPluginID(), CLogger.Level.Trace);
-        logger = plugin.getLogger(AuthenticationFilter.class.getName(),CLogger.Level.Info);
-        whitelist = new ArrayList<>();
-        whitelist.add("/includes");
-        whitelist.add("/login");
-        whitelist.add("/img");
-        whitelist.add("/css");
-        whitelist.add("/js");
-        whitelist.add("/vendors");
+        //logger = plugin.getLogger(AuthenticationFilter.class.getName(),CLogger.Level.Info);
     }
 
     @Context
@@ -87,35 +83,26 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
             Method method = resourceInfo.getResourceMethod();
 
+/*
             String requestPath = requestContext.getUriInfo().getRequestUri().getPath();
+
             System.out.println("Request Path: " + requestPath);
+
             System.out.println("TYPE: " + method.getAnnotatedReturnType().getType().getTypeName());
             for(Annotation a : method.getDeclaredAnnotations()) {
                 System.out.println("A: " + a.toString());
             }
+            */
 
             if (method.isAnnotationPresent(PermitAll.class)) {
                 return;
             }
-
-
 
             // Then check is the service key exists and is valid.
             String serviceKey = requestContext.getHeaderString("X-Auth-API-Service-Key");
             if (serviceKey != null) {
                 return;
             }
-
-            /*
-            String requestPath = requestContext.getUriInfo().getRequestUri().getPath();
-            for(String list : whitelist) {
-                if(requestPath.startsWith(list)) {
-                    System.out.println("WILDCARD FOUND!!!");
-                    return;
-                }
-            }
-            */
-
 
             Cookie sessionCookie = requestContext.getCookies().get(SESSION_COOKIE_NAME);
             if (sessionCookie == null) {
