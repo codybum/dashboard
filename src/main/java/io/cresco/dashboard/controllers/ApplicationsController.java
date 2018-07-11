@@ -15,6 +15,7 @@ import io.cresco.library.plugin.PluginBuilder;
 import io.cresco.library.utilities.CLogger;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferencePolicy;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -31,7 +32,8 @@ import java.util.Map;
         reference = @Reference(
                 name="java.lang.Object",
                 service=Object.class,
-                target="(dashboard=nfx)"
+                target="(dashboard=nfx)",
+                policy=ReferencePolicy.STATIC
         )
 )
 
@@ -44,6 +46,15 @@ public class ApplicationsController {
     private CLogger logger;
 
     public ApplicationsController() {
+
+        while(Plugin.pluginBuilder == null) {
+            try {
+                Thread.sleep(100);
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+
         if(plugin == null) {
             if(Plugin.pluginBuilder != null) {
                 plugin = Plugin.pluginBuilder;
@@ -161,7 +172,7 @@ public class ApplicationsController {
     @Path("list")
     @Produces(MediaType.APPLICATION_JSON)
     public Response list() {
-        logger.trace("Call to list()");
+        //logger.trace("Call to list()");
         try {
             if (plugin == null)
                 return Response.ok("{}", MediaType.APPLICATION_JSON_TYPE).build();
@@ -179,15 +190,12 @@ public class ApplicationsController {
             request.setParam("globalcmd", "true");
             */
 
-            System.out.println("IN APP : LIST 0");
 
             MsgEvent request = plugin.getGlobalControllerMsgEvent(MsgEvent.Type.EXEC);
             request.setParam("action", "getgpipelinestatus");
-            System.out.println("IN APP : LIST 1");
 
             MsgEvent response = plugin.sendRPC(request);
 
-            System.out.println("IN APP : LIST 2");
 
             if (response == null)
                 return Response.ok("{\"error\":\"Cresco rpc response was null\"}",

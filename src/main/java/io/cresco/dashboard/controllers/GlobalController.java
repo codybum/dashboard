@@ -8,6 +8,7 @@ import io.cresco.library.plugin.PluginService;
 import io.cresco.library.utilities.CLogger;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferencePolicy;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -33,7 +34,8 @@ import java.io.StringWriter;
         reference = @Reference(
                 name="java.lang.Object",
                 service=Object.class,
-                target="(dashboard=nfx)"
+                target="(dashboard=nfx)",
+                policy=ReferencePolicy.STATIC
         )
 )
 
@@ -46,6 +48,15 @@ public class GlobalController {
     private CLogger logger;
 
     public GlobalController() {
+        while(Plugin.pluginBuilder == null) {
+            try {
+                Thread.sleep(100);
+            } catch(Exception ex) {
+                ex.printStackTrace();
+
+            }
+        }
+
         if(plugin == null) {
             if(Plugin.pluginBuilder != null) {
                 plugin = Plugin.pluginBuilder;

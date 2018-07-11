@@ -46,8 +46,8 @@ public class AuthenticationFilter implements ContainerRequestFilter {
     private static Response REDIRECT_LOGOUT;
     //private static CLogger logger;
 
-    private PluginBuilder plugin = Plugin.pluginBuilder;
-    private CLogger logger = plugin.getLogger(AuthenticationFilter.class.getName(), CLogger.Level.Trace);
+    private PluginBuilder plugin;
+    private CLogger logger;
 
     public static void connectPlugin(PluginBuilder plugin) {
         //logger = plugin.getLogger(AuthenticationFilter.class.getName(),CLogger.Level.Info);
@@ -57,11 +57,23 @@ public class AuthenticationFilter implements ContainerRequestFilter {
     private ResourceInfo resourceInfo;
 
     public AuthenticationFilter() {
+
         try {
+
+            while(Plugin.pluginBuilder == null) {
+                try {
+                    Thread.sleep(100);
+                } catch(Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+            plugin = Plugin.pluginBuilder;
+            logger = plugin.getLogger(AuthenticationFilter.class.getName(), CLogger.Level.Trace);
+
+
             URI logout_uri = new URI("/services/logout");
             REDIRECT_LOGOUT = Response.seeOther(logout_uri).build();
         } catch (URISyntaxException e) {
-            System.out.println("Failed to generate logout redirect");
             REDIRECT_LOGOUT = Response.serverError().build();
         }
     }
@@ -71,7 +83,6 @@ public class AuthenticationFilter implements ContainerRequestFilter {
             URI login_uri = new URI("/services/login");
             return Response.seeOther(login_uri).cookie(redirectCookie).build();
         } catch (URISyntaxException e) {
-            System.out.println("Failed to generate login redirect");
             return Response.serverError().build();
         }
     }
@@ -106,23 +117,19 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
             Cookie sessionCookie = requestContext.getCookies().get(SESSION_COOKIE_NAME);
             if (sessionCookie == null) {
-                System.out.println("sessionCooke == null");
                 NewCookie redirectCookie = new NewCookie(RootController.LOGIN_REDIRECT_COOKIE_NAME, "/services/" + requestContext.getUriInfo().getPath(), null, null, null, 60 * 60, false);
-                System.out.println("name:" + redirectCookie.toCookie().getName() + " value:" + redirectCookie.toCookie().getValue());
                 requestContext.abortWith(toLogin(redirectCookie));
                 return;
             }
+
             LoginSession loginSession = LoginSessionService.getByID(sessionCookie.getValue());
             if (loginSession == null) {
-                System.out.println("loginSession == null");
-                System.out.println("REDIRECT_LOGOUT " + REDIRECT_LOGOUT);
                 requestContext.abortWith(REDIRECT_LOGOUT);
                 return;
             }
             Calendar timeout = Calendar.getInstance();
             timeout.add(Calendar.MINUTE, -1 * TIMEOUT_IN_MINUTES);
             if (loginSession.getLastSeenAsDate().before(timeout.getTime()) && !loginSession.getRemememberMe()) {
-                System.out.println("loginSession timeout");
                 requestContext.abortWith(REDIRECT_LOGOUT);
                 return;
             }

@@ -14,6 +14,7 @@ import io.cresco.library.plugin.PluginService;
 import io.cresco.library.utilities.CLogger;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferencePolicy;
 
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
@@ -43,16 +44,26 @@ import java.util.Map;
         reference = @Reference(
                 name="java.lang.Object",
                 service=Object.class,
-                target="(dashboard=nfx)"
+                target="(dashboard=nfx)",
+                policy=ReferencePolicy.STATIC
         )
 )
 
 @Path("alerts")
 public class AlertsController {
-    private static PluginBuilder plugin = null;
-    private static CLogger logger = null;
+    private PluginBuilder plugin = null;
+    private CLogger logger = null;
 
     public AlertsController() {
+
+        while(Plugin.pluginBuilder == null) {
+            try {
+                Thread.sleep(100);
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+
         if(plugin == null) {
             if(Plugin.pluginBuilder != null) {
                 plugin = Plugin.pluginBuilder;

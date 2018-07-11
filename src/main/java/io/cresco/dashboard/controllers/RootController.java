@@ -16,6 +16,7 @@ import io.cresco.library.plugin.PluginService;
 import io.cresco.library.utilities.CLogger;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferencePolicy;
 
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.*;
@@ -48,7 +49,8 @@ import java.util.Map;
         reference = @Reference(
                 name="java.lang.Object",
                 service=Object.class,
-                target="(dashboard=nfx)"
+                target="(dashboard=nfx)",
+                policy=ReferencePolicy.STATIC
         )
 )
 
@@ -64,6 +66,14 @@ public class RootController {
     public static final String LOGIN_REDIRECT_COOKIE_NAME = "crescoAgentLoginRedirect";
 
     public RootController() {
+        while(Plugin.pluginBuilder == null) {
+            try {
+                Thread.sleep(100);
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+
         if(plugin == null) {
             if(Plugin.pluginBuilder != null) {
                 plugin = Plugin.pluginBuilder;
@@ -250,7 +260,7 @@ public class RootController {
             if(in == null)
             {
 
-                System.out.println("NOT FOUND!");
+                System.out.println("File NOT FOUND " + subResources);
                 //in = getClass().getResourceAsStream("/404.html");
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
@@ -298,7 +308,7 @@ public class RootController {
             if(in == null)
             {
 
-                System.out.println("NOT FOUND!");
+                System.out.println("File NOT FOUND " + subResources);
                 //in = getClass().getResourceAsStream("/404.html");
                 return Response.status(Response.Status.NOT_FOUND).build();
             }

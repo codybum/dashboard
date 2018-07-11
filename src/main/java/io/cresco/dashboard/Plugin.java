@@ -37,6 +37,8 @@ import java.util.logging.Logger;
 
 public class Plugin implements PluginService {
 
+    //public PluginBuilder getPluginBuilder() { return  pluginBuilder; }
+
     public BundleContext context;
     public static PluginBuilder pluginBuilder;
     private Executor executor;
@@ -53,17 +55,22 @@ public class Plugin implements PluginService {
 
 
         try {
-            pluginBuilder = new PluginBuilder(this.getClass().getName(), context, map);
-            this.logger = pluginBuilder.getLogger(Plugin.class.getName(),CLogger.Level.Info);
-            this.executor = new PluginExecutor(pluginBuilder);
-            pluginBuilder.setExecutor(executor);
+            //this will be called twice due to JAX-RS-Connector
+            if(pluginBuilder == null) {
+                pluginBuilder = new PluginBuilder(this.getClass().getName(), context, map);
+                this.logger = pluginBuilder.getLogger(Plugin.class.getName(), CLogger.Level.Info);
+                this.executor = new PluginExecutor(pluginBuilder);
+                pluginBuilder.setExecutor(executor);
 
-            while(!pluginBuilder.getAgentService().getAgentState().isActive()) {
-                logger.info("Plugin " + pluginBuilder.getPluginID() + " waiting on Agent Init");
-                //System.out.println("Plugin " + pluginBuilder.getPluginID() + " waiting on Agent Init");
-                Thread.sleep(1000);
+                while (!pluginBuilder.getAgentService().getAgentState().isActive()) {
+                    logger.info("Plugin " + pluginBuilder.getPluginID() + " waiting on Agent Init");
+                    //System.out.println("Plugin " + pluginBuilder.getPluginID() + " waiting on Agent Init");
+                    Thread.sleep(1000);
+                }
+
+                pluginBuilder.setIsActive(true);
+
             }
-
             /*
             logger.info("Plugin " + pluginBuilder.getPluginID() + " Setting Classes");
 
@@ -91,7 +98,7 @@ public class Plugin implements PluginService {
             */
 
             //set plugin active
-            pluginBuilder.setIsActive(true);
+
 
 
         } catch(Exception ex) {

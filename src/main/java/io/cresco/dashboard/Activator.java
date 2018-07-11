@@ -6,6 +6,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -15,8 +16,22 @@ public class Activator implements BundleActivator {
 
     public void start(BundleContext context) throws Exception {
 
-        //set root for jersey
-        //setHttpConfig(context);
+        System.setProperty("org.jboss.logging.provider", "slf4j");
+
+        /*
+        SLF4JBridgeHandler.removeHandlersForRootLogger();
+        SLF4JBridgeHandler.install();
+        */
+                    /*
+                    java.util.logging.Logger ODBLogger = java.util.logging.Logger.getLogger("com.orientechnologies");
+                    ODBLogger.setLevel(Level.ALL);
+                    java.util.logging.Logger apacheCommonsLogger = java.util.logging.Logger.getLogger("com.orientechnologies");
+                    apacheCommonsLogger.setLevel(Level.ALL);
+                    */
+
+
+        //Delay JAXConnector Until after plugin has loaded for proper sequencing
+        new Thread(new JAXConnectorLoader(context)).start();
     }
 
     public void stop(BundleContext context) throws Exception {

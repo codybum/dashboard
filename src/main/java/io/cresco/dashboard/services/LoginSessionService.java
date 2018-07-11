@@ -36,8 +36,9 @@ public class LoginSessionService {
 
     public static LoginSession getByID(String id) {
         Session session = SessionFactoryManager.getSession();
-        if (session == null)
+        if (session == null) {
             return null;
+        }
         try {
             session.getTransaction().begin();
             Query query = session.createQuery( "from LoginSession where id = :id" );
@@ -49,6 +50,7 @@ public class LoginSessionService {
             if (session.getTransaction().getStatus() == TransactionStatus.ACTIVE ||
                     session.getTransaction().getStatus() == TransactionStatus.MARKED_ROLLBACK)
                 session.getTransaction().rollback();
+            e.printStackTrace();
             return null;
         } finally {
             try {

@@ -52,18 +52,28 @@ import java.util.concurrent.ThreadLocalRandom;
         reference = @Reference(
                 name="java.lang.Object",
                 service=Object.class,
-                target="(dashboard=nfx)"
+                target="(dashboard=nfx)",
+                policy=ReferencePolicy.STATIC
         )
 )
 
 
 @Path("agents")
 public class AgentsController {
-    private static PluginBuilder plugin;
-    private static CLogger logger;
+    private PluginBuilder plugin;
+    private CLogger logger;
     //private static Gson gson = gson = new Gson();
 
     public AgentsController() {
+
+        while(Plugin.pluginBuilder == null) {
+            try {
+                Thread.sleep(100);
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+
         if(plugin == null) {
             if(Plugin.pluginBuilder != null) {
                 plugin = Plugin.pluginBuilder;
@@ -102,10 +112,12 @@ public class AgentsController {
 
             return Response.ok(writer.toString()).build();
         } catch (PebbleException e) {
+            e.printStackTrace();
             return Response.ok("PebbleException: " + e.getMessage()).build();
         } /*catch (IOException e) {
             return Response.ok("IOException: " + e.getMessage()).build();
         }*/ catch (Exception e) {
+            e.printStackTrace();
             return Response.ok("Server error: " + e.getMessage()).build();
         }
     }
@@ -150,17 +162,13 @@ public class AgentsController {
     @Path("list")
     @Produces(MediaType.APPLICATION_JSON)
     public Response list() {
-        logger.trace("Call to list()");
-        System.out.println("AGETN LIST 0");
+        //logger.trace("Call to list()");
         try {
-            System.out.println("AGETN LIST 1");
             if (plugin == null)
                 return Response.ok("{}", MediaType.APPLICATION_JSON_TYPE).build();
 
-            System.out.println("AGETN LIST 2");
             MsgEvent request = plugin.getGlobalControllerMsgEvent(MsgEvent.Type.EXEC);
             request.setParam("action", "listagents");
-            System.out.println("AGETN LIST 3");
             /*
             MsgEvent request = new MsgEvent(MsgEvent.Type.EXEC, plugin.getRegion(), plugin.getAgent(),
                     plugin.getPluginID(), "Agent List Request");
@@ -177,7 +185,7 @@ public class AgentsController {
             */
 
             MsgEvent response = plugin.sendRPC(request);
-            System.out.println("AGETN LIST 4");
+
             if (response == null)
                 return Response.ok("{\"error\":\"Cresco rpc response was null\"}",
                         MediaType.APPLICATION_JSON_TYPE).build();
@@ -186,9 +194,18 @@ public class AgentsController {
                 agents = response.getCompressedParam("agentslist");
             return Response.ok(agents, MediaType.APPLICATION_JSON_TYPE).build();
         } catch (Exception e) {
+            /*
             if (plugin != null)
                 logger.error("list() : {}", e.getMessage());
             return Response.ok("{}", MediaType.APPLICATION_JSON_TYPE).build();
+            */
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            e.printStackTrace();
+
+            if (plugin != null)
+                logger.error("list() : {}", sw.toString());
+            return Response.ok("{\"agents\":[]}", MediaType.APPLICATION_JSON_TYPE).build();
         }
     }
 
