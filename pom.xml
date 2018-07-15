@@ -326,22 +326,22 @@
             <version>5.3.2.Final</version>
 
             <exclusions>
-            <exclusion>
-                <artifactId>jta</artifactId>
-                <groupId>javax.transaction</groupId>
-            </exclusion>
-            <!-- Exclude SLF4j to avoid version conflicts (we have 1.6.6, this drags
-                    in 1.6.1) -->
-            <exclusion>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-            </exclusion>
-            <!-- Exclude dom4j to avoid version conflicts (we have 1.6, this drags
-                    in 1.6.1) -->
-            <exclusion>
-                <groupId>dom4j</groupId>
-                <artifactId>dom4j</artifactId>
-            </exclusion>
+                <exclusion>
+                    <artifactId>jta</artifactId>
+                    <groupId>javax.transaction</groupId>
+                </exclusion>
+                <!-- Exclude SLF4j to avoid version conflicts (we have 1.6.6, this drags
+                        in 1.6.1) -->
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+                <!-- Exclude dom4j to avoid version conflicts (we have 1.6, this drags
+                        in 1.6.1) -->
+                <exclusion>
+                    <groupId>dom4j</groupId>
+                    <artifactId>dom4j</artifactId>
+                </exclusion>
             </exclusions>
 
         </dependency>
@@ -381,44 +381,44 @@
             <artifactId>jbcrypt</artifactId>
             <version>0.3m</version>
         </dependency>-->
-<!--
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.16</version>
-        </dependency>
+        <!--
+                <dependency>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                    <version>1.2.16</version>
+                </dependency>
 
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.6.4</version>
-        </dependency>
--->
+                <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                    <version>1.6.4</version>
+                </dependency>
+        -->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>1.4.192</version>
         </dependency>
 
-    <dependency>
-        <groupId>javax.persistence</groupId>
-        <artifactId>javax.persistence-api</artifactId>
-        <version>2.2</version>
-    </dependency>
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>javax.persistence-api</artifactId>
+            <version>2.2</version>
+        </dependency>
 
-    <!-- https://mvnrepository.com/artifact/antlr/antlr -->
-    <dependency>
-        <groupId>antlr</groupId>
-        <artifactId>antlr</artifactId>
-        <version>2.7.7</version>
-    </dependency>
+        <!-- https://mvnrepository.com/artifact/antlr/antlr -->
+        <dependency>
+            <groupId>antlr</groupId>
+            <artifactId>antlr</artifactId>
+            <version>2.7.7</version>
+        </dependency>
 
-    <!-- https://mvnrepository.com/artifact/net.bytebuddy/byte-buddy -->
-    <dependency>
-        <groupId>net.bytebuddy</groupId>
-        <artifactId>byte-buddy</artifactId>
-        <version>1.8.12</version>
-    </dependency>
+        <!-- https://mvnrepository.com/artifact/net.bytebuddy/byte-buddy -->
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+            <version>1.8.12</version>
+        </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.javassist/javassist -->
         <dependency>

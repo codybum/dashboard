@@ -43,6 +43,14 @@ public class JAXConnectorLoader implements Runnable  {
                     System.out.println("Started jersey");
 */
 
+/*
+                    System.out.println("Starting jersey");
+                    String jerseyBundlePath = getClass().getClassLoader().getResource("jersey-all-2.22.2.jar").getPath();
+                    InputStream jerseybundleStream = getClass().getClassLoader().getResourceAsStream("jersey-all-2.22.2.jar");
+                    context.installBundle(jerseyBundlePath,jerseybundleStream).start();
+                    System.out.println("Started jersey");
+*/
+
                     //this will expose web pages with jersey
                     String publisherBundlePath = getClass().getClassLoader().getResource("publisher-5.3.1.jar").getPath();
                     InputStream publisherBundleStream = getClass().getClassLoader().getResourceAsStream("publisher-5.3.1.jar");
