@@ -17,7 +17,6 @@ public class Activator implements BundleActivator {
 
         System.setProperty("org.jboss.logging.provider", "slf4j");
 
-
         /*
         SLF4JBridgeHandler.removeHandlersForRootLogger();
         SLF4JBridgeHandler.install();
