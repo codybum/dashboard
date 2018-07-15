@@ -1,22 +1,12 @@
 package io.cresco.dashboard;
 
 
-import io.cresco.library.agent.AgentService;
 import io.cresco.library.plugin.PluginService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.cm.Configuration;
-import org.osgi.service.cm.ConfigurationAdmin;
-import org.slf4j.bridge.SLF4JBridgeHandler;
 
-import java.io.File;
 import java.io.InputStream;
-import java.util.Dictionary;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.UUID;
-import java.util.logging.Level;
 
 public class JAXConnectorLoader implements Runnable  {
 

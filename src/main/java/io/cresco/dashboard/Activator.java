@@ -6,7 +6,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
-import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
