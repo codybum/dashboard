@@ -160,10 +160,14 @@ public class PluginsController {
     public Response info(@PathParam("region") String region,
                          @PathParam("agent") String agent,
                          @PathParam("plugin") String pluginID) {
+
+
         logger.trace("Call to info({}, {}, {})", region, agent, pluginID);
+
         try {
             if (plugin == null)
                 return Response.ok("{}", MediaType.APPLICATION_JSON_TYPE).build();
+            pluginID = "plugin/" + pluginID;
             /*
             MsgEvent request = new MsgEvent(MsgEvent.Type.EXEC, plugin.getRegion(), plugin.getAgent(),
                     plugin.getPluginID(), "Agent List Request");
