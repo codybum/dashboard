@@ -16,6 +16,8 @@ public class Activator implements BundleActivator {
     public void start(BundleContext context) throws Exception {
 
         System.setProperty("org.jboss.logging.provider", "slf4j");
+        System.setProperty("com.mchange.v2.log.MLog", "com.mchange.v2.log.FallbackMLog");
+        System.setProperty("com.mchange.v2.log.FallbackMLog.DEFAULT_CUTOFF_LEVEL", "WARNING");
 
         /*
         SLF4JBridgeHandler.removeHandlersForRootLogger();

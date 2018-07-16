@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1531752961040
+Bnd-LastModified: 1531770531117
 Build-Jdk: 1.8.0_144
 Built-By: cody
 Bundle-Activator: io.cresco.dashboard.Activator
@@ -17,7 +17,7 @@ Bundle-Name: Dashboard Plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-SymbolicName: io.cresco.dashboard
 Bundle-Vendor: Cresco.io
-Bundle-Version: 1.0.0.SNAPSHOT-2018-07-16T145553Z
+Bundle-Version: 1.0.0.SNAPSHOT-2018-07-16T194843Z
 Created-By: Apache Maven Bundle Plugin
 Embed-Dependency: !org.osgi.*;!osgi.cmpn.*;!library;
 Embedded-Artifacts: publisher-5.3.1.jar;g="com.eclipsesource.jaxrs";a="p
@@ -971,8 +971,8 @@ Export-Package: org.hibernate;version="5.3.2.Final";uses:="javax.naming,
  ibernate.usertype;version="5.3.2.Final";uses:="org.hibernate,org.hibern
  ate.collection.spi,org.hibernate.engine.jdbc,org.hibernate.engine.spi,o
  rg.hibernate.persister.collection,org.hibernate.type",org.hibernate.xsd
- .cfg;version="1.0.0.SNAPSHOT-2018-07-16T145553Z",org.hibernate.xsd.mapp
- ing;version="1.0.0.SNAPSHOT-2018-07-16T145553Z",javax.persistence;versi
+ .cfg;version="1.0.0.SNAPSHOT-2018-07-16T194843Z",org.hibernate.xsd.mapp
+ ing;version="1.0.0.SNAPSHOT-2018-07-16T194843Z",javax.persistence;versi
  on="2.2.0";uses:="javax.persistence.criteria,javax.persistence.metamode
  l,javax.persistence.spi",javax.persistence.criteria;version="2.2.0";use
  s:="javax.persistence,javax.persistence.metamodel",javax.persistence.me
@@ -987,22 +987,22 @@ Export-Package: org.hibernate;version="5.3.2.Final";uses:="javax.naming,
  classmate,com.fasterxml.classmate.members",com.fasterxml.classmate.util
  ;version="1.3.4";uses:="com.fasterxml.classmate,com.fasterxml.classmate
  .types",antlr;uses:="antlr.ASdebug,antlr.collections,antlr.collections.
- impl,antlr.debug";version="1.0.0.SNAPSHOT-2018-07-16T145553Z",antlr.ASd
- ebug;uses:=antlr;version="1.0.0.SNAPSHOT-2018-07-16T145553Z",antlr.acti
+ impl,antlr.debug";version="1.0.0.SNAPSHOT-2018-07-16T194843Z",antlr.ASd
+ ebug;uses:=antlr;version="1.0.0.SNAPSHOT-2018-07-16T194843Z",antlr.acti
  ons.cpp;uses:="antlr,antlr.collections.impl";version="1.0.0.SNAPSHOT-20
- 18-07-16T145553Z",antlr.actions.csharp;uses:="antlr,antlr.collections.i
- mpl";version="1.0.0.SNAPSHOT-2018-07-16T145553Z",antlr.actions.java;use
- s:="antlr,antlr.collections.impl";version="1.0.0.SNAPSHOT-2018-07-16T14
- 5553Z",antlr.actions.python;uses:="antlr,antlr.collections.impl";versio
- n="1.0.0.SNAPSHOT-2018-07-16T145553Z",antlr.build;version="1.0.0.SNAPSH
- OT-2018-07-16T145553Z",antlr.collections;uses:=antlr;version="1.0.0.SNA
- PSHOT-2018-07-16T145553Z",antlr.collections.impl;uses:="antlr,antlr.col
- lections";version="1.0.0.SNAPSHOT-2018-07-16T145553Z",antlr.debug;uses:
- ="antlr,antlr.collections.impl";version="1.0.0.SNAPSHOT-2018-07-16T1455
- 53Z",antlr.debug.misc;uses:="antlr.collections,javax.swing,javax.swing.
- event,javax.swing.tree";version="1.0.0.SNAPSHOT-2018-07-16T145553Z",ant
+ 18-07-16T194843Z",antlr.actions.csharp;uses:="antlr,antlr.collections.i
+ mpl";version="1.0.0.SNAPSHOT-2018-07-16T194843Z",antlr.actions.java;use
+ s:="antlr,antlr.collections.impl";version="1.0.0.SNAPSHOT-2018-07-16T19
+ 4843Z",antlr.actions.python;uses:="antlr,antlr.collections.impl";versio
+ n="1.0.0.SNAPSHOT-2018-07-16T194843Z",antlr.build;version="1.0.0.SNAPSH
+ OT-2018-07-16T194843Z",antlr.collections;uses:=antlr;version="1.0.0.SNA
+ PSHOT-2018-07-16T194843Z",antlr.collections.impl;uses:="antlr,antlr.col
+ lections";version="1.0.0.SNAPSHOT-2018-07-16T194843Z",antlr.debug;uses:
+ ="antlr,antlr.collections.impl";version="1.0.0.SNAPSHOT-2018-07-16T1948
+ 43Z",antlr.debug.misc;uses:="antlr.collections,javax.swing,javax.swing.
+ event,javax.swing.tree";version="1.0.0.SNAPSHOT-2018-07-16T194843Z",ant
  lr.preprocessor;uses:="antlr,antlr.collections.impl";version="1.0.0.SNA
- PSHOT-2018-07-16T145553Z",javax.transaction;version="1.2";uses:="javax.
+ PSHOT-2018-07-16T194843Z",javax.transaction;version="1.2";uses:="javax.
  enterprise.context,javax.enterprise.util,javax.interceptor,javax.transa
  ction.xa",net.bytebuddy;version="1.8.12";uses:="net.bytebuddy.build,net
  .bytebuddy.description.method,net.bytebuddy.description.type,net.bytebu
@@ -1133,8 +1133,8 @@ Export-Package: org.hibernate;version="5.3.2.Final";uses:="javax.naming,
  entation.bytecode,net.bytebuddy.jar.asm,net.bytebuddy.utility",net.byte
  buddy.jar.asm;version="1.8.12",net.bytebuddy.jar.asm.commons;uses:="net
  .bytebuddy.jar.asm,net.bytebuddy.jar.asm.signature";version="1.0.0.SNAP
- SHOT-2018-07-16T145553Z",net.bytebuddy.jar.asm.signature;version="1.0.0
- .SNAPSHOT-2018-07-16T145553Z",net.bytebuddy.matcher;version="1.8.12";us
+ SHOT-2018-07-16T194843Z",net.bytebuddy.jar.asm.signature;version="1.0.0
+ .SNAPSHOT-2018-07-16T194843Z",net.bytebuddy.matcher;version="1.8.12";us
  es:="net.bytebuddy.build,net.bytebuddy.description,net.bytebuddy.descri
  ption.annotation,net.bytebuddy.description.field,net.bytebuddy.descript
  ion.method,net.bytebuddy.description.type,net.bytebuddy.utility",net.by
@@ -1150,31 +1150,31 @@ Export-Package: org.hibernate;version="5.3.2.Final";uses:="javax.naming,
  .bytebuddy.build",net.bytebuddy.utility.visitor;version="1.8.12";uses:=
  "net.bytebuddy.description.method,net.bytebuddy.implementation.bytecode
  ,net.bytebuddy.jar.asm",org.dom4j;uses:="org.dom4j.rule,org.dom4j.tree,
- org.jaxen,org.xml.sax";version="1.0.0.SNAPSHOT-2018-07-16T145553Z",org.
+ org.jaxen,org.xml.sax";version="1.0.0.SNAPSHOT-2018-07-16T194843Z",org.
  dom4j.bean;uses:="org.dom4j,org.dom4j.tree,org.xml.sax";version="1.0.0.
- SNAPSHOT-2018-07-16T145553Z",org.dom4j.datatype;uses:="com.sun.msv.data
+ SNAPSHOT-2018-07-16T194843Z",org.dom4j.datatype;uses:="com.sun.msv.data
  type,com.sun.msv.datatype.xsd,org.dom4j,org.dom4j.tree,org.relaxng.data
- type";version="1.0.0.SNAPSHOT-2018-07-16T145553Z",org.dom4j.dom;uses:="
+ type";version="1.0.0.SNAPSHOT-2018-07-16T194843Z",org.dom4j.dom;uses:="
  org.dom4j,org.dom4j.tree,org.w3c.dom";version="1.0.0.SNAPSHOT-2018-07-1
- 6T145553Z",org.dom4j.dtd;version="1.0.0.SNAPSHOT-2018-07-16T145553Z",or
+ 6T194843Z",org.dom4j.dtd;version="1.0.0.SNAPSHOT-2018-07-16T194843Z",or
  g.dom4j.io;uses:="javax.xml.namespace,javax.xml.stream,javax.xml.stream
  .events,javax.xml.stream.util,javax.xml.transform.sax,org.dom4j,org.dom
  4j.tree,org.gjt.xpp,org.w3c.dom,org.xml.sax,org.xml.sax.ext,org.xml.sax
- .helpers,org.xmlpull.v1";version="1.0.0.SNAPSHOT-2018-07-16T145553Z",or
+ .helpers,org.xmlpull.v1";version="1.0.0.SNAPSHOT-2018-07-16T194843Z",or
  g.dom4j.jaxb;uses:="javax.xml.bind,org.dom4j,org.dom4j.io,org.xml.sax";
- version="1.0.0.SNAPSHOT-2018-07-16T145553Z",org.dom4j.rule;uses:="org.d
- om4j,org.jaxen";version="1.0.0.SNAPSHOT-2018-07-16T145553Z",org.dom4j.r
+ version="1.0.0.SNAPSHOT-2018-07-16T194843Z",org.dom4j.rule;uses:="org.d
+ om4j,org.jaxen";version="1.0.0.SNAPSHOT-2018-07-16T194843Z",org.dom4j.r
  ule.pattern;uses:="org.dom4j,org.dom4j.rule";version="1.0.0.SNAPSHOT-20
- 18-07-16T145553Z",org.dom4j.swing;uses:="javax.swing.table,javax.swing.
- tree,org.dom4j,org.jaxen";version="1.0.0.SNAPSHOT-2018-07-16T145553Z",o
+ 18-07-16T194843Z",org.dom4j.swing;uses:="javax.swing.table,javax.swing.
+ tree,org.dom4j,org.jaxen";version="1.0.0.SNAPSHOT-2018-07-16T194843Z",o
  rg.dom4j.tree;uses:="org.dom4j,org.dom4j.rule,org.xml.sax";version="1.0
- .0.SNAPSHOT-2018-07-16T145553Z",org.dom4j.util;uses:="org.dom4j,org.dom
+ .0.SNAPSHOT-2018-07-16T194843Z",org.dom4j.util;uses:="org.dom4j,org.dom
  4j.rule,org.dom4j.tree,org.jaxen,org.xml.sax";version="1.0.0.SNAPSHOT-2
- 018-07-16T145553Z",org.dom4j.xpath;uses:="org.dom4j,org.dom4j.rule,org.
- jaxen,org.jaxen.pattern";version="1.0.0.SNAPSHOT-2018-07-16T145553Z",or
+ 018-07-16T194843Z",org.dom4j.xpath;uses:="org.dom4j,org.dom4j.rule,org.
+ jaxen,org.jaxen.pattern";version="1.0.0.SNAPSHOT-2018-07-16T194843Z",or
  g.dom4j.xpp;uses:="org.dom4j,org.gjt.xpp";version="1.0.0.SNAPSHOT-2018-
- 07-16T145553Z",com.coverity.security;version="1.0.0.SNAPSHOT-2018-07-16
- T145553Z"
+ 07-16T194843Z",com.coverity.security;version="1.0.0.SNAPSHOT-2018-07-16
+ T194843Z"
 Import-Package: antlr;resolution:=optional,antlr.ASdebug;resolution:=opt
  ional,antlr.actions.cpp;resolution:=optional,antlr.actions.csharp;resol
  ution:=optional,antlr.actions.java;resolution:=optional,antlr.actions.p
