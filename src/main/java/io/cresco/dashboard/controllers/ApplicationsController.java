@@ -234,7 +234,7 @@ public class ApplicationsController {
             request.setParam("is_global", Boolean.TRUE.toString());
             request.setParam("globalcmd", "true");
             */
-            MsgEvent request = plugin.getGlobalControllerMsgEvent(MsgEvent.Type.EXEC);
+            MsgEvent request = plugin.getGlobalControllerMsgEvent(MsgEvent.Type.CONFIG);
             request.setParam("action", "gpipelinesubmit");
             request.setParam("action_tenantid", tenant);
             request.setCompressedParam("action_gpipeline", pipeline);
