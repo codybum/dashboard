@@ -406,14 +406,14 @@ public class ApplicationsController {
             request.setParam("is_global", Boolean.TRUE.toString());
             request.setParam("globalcmd", "true");
             */
-            MsgEvent request = plugin.getGlobalControllerMsgEvent(MsgEvent.Type.EXEC);
+            MsgEvent request = plugin.getGlobalControllerMsgEvent(MsgEvent.Type.CONFIG);
             request.setParam("action", "gpipelineremove");
             request.setParam("action_pipelineid", id);
             MsgEvent response = plugin.sendRPC(request);
             if (response == null)
                 return Response.ok("{\"error\":\"Cresco rpc response was null\"}",
                         MediaType.APPLICATION_JSON_TYPE).build();
-            return Response.seeOther(new URI("/applications")).cookie().build();
+            return Response.seeOther(new URI("/services/applications")).cookie().build();
         } catch (Exception e) {
             if (plugin != null)
                 logger.error("delete({}) : {}", id, e.getMessage());

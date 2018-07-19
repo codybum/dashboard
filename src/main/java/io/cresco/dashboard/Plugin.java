@@ -122,4 +122,12 @@ public class Plugin implements PluginService {
             return false;
         }
     }
+
+    @Override
+    public boolean isStopped() {
+        pluginBuilder.setExecutor(null);
+        pluginBuilder.setIsActive(false);
+        return true;
+    }
+
 }
