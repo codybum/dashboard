@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
@@ -16,20 +17,19 @@ import io.cresco.dashboard.models.LoginSession;
 import io.cresco.dashboard.services.LoginSessionService;
 import io.cresco.library.messaging.MsgEvent;
 import io.cresco.library.plugin.PluginBuilder;
-import io.cresco.library.plugin.PluginService;
 import io.cresco.library.utilities.CLogger;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferencePolicy;
+import java.lang.reflect.Type;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.*;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.nio.file.Paths;
+import java.util.*;
 
 /*
 @Component(service = Object.class,
@@ -58,8 +58,12 @@ public class PluginsController {
     //private static Gson gson;
     private PluginBuilder plugin;
     private CLogger logger;
+    private Gson gson;
+    private Type type;
+    private String tmpDir;
 
-    public PluginsController() {
+    public PluginsController()  {
+
 
         while(Plugin.pluginBuilder == null) {
             try {
@@ -73,6 +77,10 @@ public class PluginsController {
             if(Plugin.pluginBuilder != null) {
                 plugin = Plugin.pluginBuilder;
                 logger = plugin.getLogger(PluginsController.class.getName(), CLogger.Level.Trace);
+                gson = new Gson();
+                this.type = new TypeToken<Map<String, List<Map<String, String>>>>() {
+                }.getType();
+                tmpDir = System.getProperty("java.io.tmpdir");
             }
         }
     }
@@ -407,28 +415,43 @@ public class PluginsController {
         }
     }
 
-    /*
+
     @POST
-    @Path("/uploadplugin")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Path("uploadplugin")
+    //@Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Consumes("application/java-archive")
     @Produces(MediaType.APPLICATION_JSON)
     public Response uploadFile(
-            @FormDataParam("file") InputStream uploadedInputStream , @FormDataParam("pluginname") String pluginName, @FormDataParam("jarfile") String jarFile) {
+            //FormDataMultiPart formDataMultiPart) {
+            //@FormDataParam("file") InputStream uploadedInputStream , @FormDataParam("pluginname") String pluginName, @FormDataParam("jarfile") String jarFile) {
+            //@FormDataParam("file") InputStream uploadedInputStream , @FormParam("pluginname") String pluginName, @FormParam("jarfile") String jarFile) {
+            InputStream uploadedInputStream) {
 
+
+
+        File pluginFileObject = null;
         try {
-            //todo fix repo path
-            //String filePath = plugin.repoPath + "/" + jarFile;
-            String filePath = jarFile;
 
-            File pluginFileObject = new File(filePath);
+
+            String tmpFile = UUID.randomUUID().toString();
+            if(tmpDir != null) {
+                tmpFile = tmpDir + "/" + tmpFile;
+            }
+
+            pluginFileObject = new File(tmpFile);
             if (pluginFileObject.exists()) {
                 pluginFileObject.delete();
             }
 
-            if(saveToFile(uploadedInputStream, filePath)) {
-                Map<String,String> response = new HashMap<>();
-                response.put("pluginname",pluginName);
-                response.put("jarfile",jarFile);
+            saveToFile(uploadedInputStream,tmpFile);
+
+            //if(saveToRepo(uploadedInputStream, tmpFile)) {
+            if(saveToRepo(pluginFileObject)) {
+
+            Map<String,String> response = new HashMap<>();
+                //response.put("pluginname",pluginName);
+                //response.put("jarfile",jarFile);
+                //pluginFileObject.delete();
                 return Response.ok(gson.toJson(response), MediaType.APPLICATION_JSON_TYPE).build();
             } else {
                 return Response.ok("{\"error\":\"Failed to Save File\"}",
@@ -438,10 +461,92 @@ public class PluginsController {
         } catch(Exception ex){
             return Response.ok("{\"error\":\"" + ex.toString() + "\"}",
                     MediaType.APPLICATION_JSON_TYPE).build();
+        } finally {
+            if(pluginFileObject != null) {
+                //logger.error("Need to Delete File");
+                pluginFileObject.delete();
+            }
         }
 
     }
-    */
+
+    private boolean saveToRepo(File tmpJarFile) {
+        boolean isSaved = false;
+        try {
+
+            String pluginName = plugin.getPluginName(tmpJarFile.getAbsolutePath());
+            String pluginMD5 = plugin.getJarMD5(tmpJarFile.getAbsolutePath());
+            String pluginJarFile = tmpJarFile.getName();
+            String pluginVersion = plugin.getPluginVersion(tmpJarFile.getAbsolutePath());
+
+            if((pluginName != null) && (pluginMD5 != null) && (pluginJarFile != null) && (pluginVersion != null)) {
+
+            MsgEvent request = plugin.getGlobalControllerMsgEvent(MsgEvent.Type.EXEC);
+            request.setParam("action", "listrepoinstances");
+            MsgEvent response = plugin.sendRPC(request);
+
+            String region = null;
+            String agent = null;
+            String pluginID = null;
+
+            if(response != null) {
+                if (response.getParams().containsKey("listrepoinstances")) {
+
+                    Map<String, List<Map<String, String>>> myRepoMap = gson.fromJson(response.getCompressedParam("listrepoinstances"), type);
+                    if (myRepoMap != null) {
+
+                        if (myRepoMap.containsKey("plugins")) {
+
+                            for (Map<String, String> repoMap : myRepoMap.get("plugins")) {
+
+                                if ((plugin.getRegion().equals(repoMap.get("region"))) && (plugin.getAgent().equals(repoMap.get("agent")))) {
+                                    region = repoMap.get("region");
+                                    agent = repoMap.get("agent");
+                                    pluginID = repoMap.get("pluginid");
+                                } else if (plugin.getRegion().equals(repoMap.get("region"))) {
+                                    region = repoMap.get("region");
+                                    agent = repoMap.get("agent");
+                                    pluginID = repoMap.get("pluginid");
+                                } else if (region == null) {
+                                    region = repoMap.get("region");
+                                    agent = repoMap.get("agent");
+                                    pluginID = repoMap.get("pluginid");
+                                }
+                            }
+                        }
+                    }
+
+                    if ((region != null) && (agent != null) && (pluginID != null)) {
+
+                        java.nio.file.Path jarPath = Paths.get(tmpJarFile.getAbsolutePath());
+
+                        MsgEvent uploadMsg = plugin.getGlobalPluginMsgEvent(MsgEvent.Type.EXEC, region, agent, pluginID);
+                        uploadMsg.setParam("action","putjar");
+                        uploadMsg.setParam("pluginname", pluginName);
+                        uploadMsg.setParam("md5", pluginMD5);
+                        uploadMsg.setParam("jarfile", pluginJarFile);
+                        uploadMsg.setParam("version", pluginVersion);
+                        uploadMsg.setDataParam("jardata", java.nio.file.Files.readAllBytes(jarPath));
+
+                        MsgEvent verify = plugin.sendRPC(uploadMsg);
+                        if (verify != null) {
+                            if (verify.getParams().containsKey("md5-confirm")) {
+                                isSaved = true;
+                            }
+                        }
+
+                    }
+
+                }
+            }
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+        return isSaved;
+    }
 
     // save uploaded file to new location
     private boolean saveToFile(InputStream uploadedInputStream,

@@ -443,22 +443,26 @@
 
     function uploadPlugin() {
         editting_plugin = false;
-        var data = new FormData();
+        //var data = new FormData();
         var file = $('#upload-plugin-modal-file')[0].files[0];
-        data.append('pluginname', file.name);
-        data.append('jarfile', file.name);
-        data.append('file', $('#upload-plugin-modal-file')[0].files[0]);
+
+        //var myFormData = new FormData();
+        //myFormData.append('pictureFile', pictureInput.files[0]);
+
+        //data.append('pluginname', file.name);
+        //data.append('jarfile', file.name);
+        //data.append('file', $('#upload-plugin-modal-file')[0].files[0]);
         $('#upload-plugin-modal-submit-btn').css("display", "none");
         $('#upload-plugin-modal-form').css("display", "none");
         $('#upload-plugin-modal-waiting').css("display", "block");
         $('#upload-plugin-modal-success').css("display", "none");
         $('#upload-plugin-modal-error').css("display", "none");
-        console.log(data);
+        console.log(file);
         $.ajax({
             url: '/services/plugins/uploadplugin',
             method: "POST",
             dataType: 'json',
-            data: data,
+            data: file,
             processData: false,
             contentType: false,
             success: function(result) {
