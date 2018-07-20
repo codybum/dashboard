@@ -175,7 +175,7 @@ public class PluginsController {
         try {
             if (plugin == null)
                 return Response.ok("{}", MediaType.APPLICATION_JSON_TYPE).build();
-            pluginID = "plugin/" + pluginID;
+            //pluginID = "plugin/" + pluginID;
             /*
             MsgEvent request = new MsgEvent(MsgEvent.Type.EXEC, plugin.getRegion(), plugin.getAgent(),
                     plugin.getPluginID(), "Agent List Request");
@@ -194,7 +194,10 @@ public class PluginsController {
             request.setParam("action_region", region);
             request.setParam("action_agent", agent);
             request.setParam("action_plugin", pluginID);
+            //logger.error("presend " + request.getParams());
             MsgEvent response = plugin.sendRPC(request);
+            //logger.error("postsend " + response.getParams());
+
             if (response == null)
                 return Response.ok("{\"error\":\"Cresco rpc response was null\"}",
                         MediaType.APPLICATION_JSON_TYPE).build();
