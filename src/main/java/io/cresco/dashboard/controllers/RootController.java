@@ -77,7 +77,7 @@ public class RootController {
         if(plugin == null) {
             if(Plugin.pluginBuilder != null) {
                 plugin = Plugin.pluginBuilder;
-                logger = plugin.getLogger(RootController.class.getName(), CLogger.Level.Trace);
+                logger = plugin.getLogger(RootController.class.getName(), CLogger.Level.Info);
             }
         }
     }

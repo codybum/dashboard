@@ -76,7 +76,7 @@ public class PluginsController {
         if(plugin == null) {
             if(Plugin.pluginBuilder != null) {
                 plugin = Plugin.pluginBuilder;
-                logger = plugin.getLogger(PluginsController.class.getName(), CLogger.Level.Trace);
+                logger = plugin.getLogger(PluginsController.class.getName(), CLogger.Level.Info);
                 gson = new Gson();
                 this.type = new TypeToken<Map<String, List<Map<String, String>>>>() {
                 }.getType();

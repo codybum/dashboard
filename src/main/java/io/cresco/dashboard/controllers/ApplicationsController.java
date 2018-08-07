@@ -58,7 +58,7 @@ public class ApplicationsController {
         if(plugin == null) {
             if(Plugin.pluginBuilder != null) {
                 plugin = Plugin.pluginBuilder;
-                logger = plugin.getLogger(ApplicationsController.class.getName(), CLogger.Level.Trace);
+                logger = plugin.getLogger(ApplicationsController.class.getName(), CLogger.Level.Info);
             }
         }
     }

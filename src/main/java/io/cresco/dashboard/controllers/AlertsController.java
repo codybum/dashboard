@@ -67,7 +67,7 @@ public class AlertsController {
         if(plugin == null) {
             if(Plugin.pluginBuilder != null) {
                 plugin = Plugin.pluginBuilder;
-                logger = plugin.getLogger(AlertsController.class.getName(), CLogger.Level.Trace);
+                logger = plugin.getLogger(AlertsController.class.getName(), CLogger.Level.Info);
             }
         }
     }
