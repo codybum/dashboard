@@ -68,7 +68,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
                 }
             }
             plugin = Plugin.pluginBuilder;
-            logger = plugin.getLogger(AuthenticationFilter.class.getName(), CLogger.Level.Trace);
+            logger = plugin.getLogger(AuthenticationFilter.class.getName(), CLogger.Level.Info);
 
 
             URI logout_uri = new URI("/services/logout");
